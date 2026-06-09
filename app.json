@@ -1,6 +1,12 @@
 {
   "pages": [
-    "pages/index/index"
+    "pages/index/index",
+    "pages/teacher/home/index",
+    "pages/teacher/history/index",
+    "pages/teacher/profile/index",
+    "pages/parent/home/index",
+    "pages/parent/history/index",
+    "pages/parent/profile/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",

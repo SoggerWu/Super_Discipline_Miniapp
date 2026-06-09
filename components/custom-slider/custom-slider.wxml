@@ -1,0 +1,12 @@
+<view
+  class="slider-shell"
+  bindtap="handleTap"
+  bindtouchstart="handleTouchStart"
+  bindtouchmove="handleTouchMove"
+  bindtouchend="handleTouchEnd"
+>
+  <view class="slider-track">
+    <view class="slider-progress" style="width: {{percent}}%; background: {{activeColor}};"></view>
+  </view>
+  <view class="slider-thumb" style="left: calc({{percent}}% - 28rpx);"></view>
+</view>

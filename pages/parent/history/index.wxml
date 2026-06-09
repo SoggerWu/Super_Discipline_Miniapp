@@ -1,0 +1,34 @@
+<navigation-bar title="家长端历史" back="{{true}}" color="black" background="#F6F7F9"></navigation-bar>
+
+<view class="history-page">
+  <view class="history-head">
+    <text class="history-title">{{month}}</text>
+    <text class="history-subtitle">林浩 · 工作日晚自习记录</text>
+  </view>
+
+  <view class="calendar-card">
+    <view wx:for="{{weekdays}}" wx:key="*this" class="weekday">{{item}}</view>
+    <view wx:for="{{days}}" wx:key="index" class="day-cell">
+      <block wx:if="{{item.day}}">
+        <text class="day-num">{{item.day}}</text>
+        <canvas
+          type="2d"
+          class="history-ring-canvas"
+          canvas-id="{{item.canvasId}}"
+        ></canvas>
+      </block>
+    </view>
+  </view>
+
+  <view class="tab-bar">
+    <view class="tab-item" bindtap="goHome">
+      <text class="tab-label">首页</text>
+    </view>
+    <view class="tab-item tab-item-active">
+      <text class="tab-label">历史</text>
+    </view>
+    <view class="tab-item" bindtap="goProfile">
+      <text class="tab-label">我的</text>
+    </view>
+  </view>
+</view>
