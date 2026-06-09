@@ -1,0 +1,5 @@
+<navigation-bar title="老师端我的" back="{{true}}" color="black" background="#F4F6F9"></navigation-bar>
+<view class="placeholder-page">
+  <text class="placeholder-title">老师端我的</text>
+  <text class="placeholder-copy">这里后面放教师姓名、所带班级、账号设置和退出登录。</text>
+</view>

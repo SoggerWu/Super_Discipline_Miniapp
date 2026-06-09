@@ -1,0 +1,110 @@
+<navigation-bar title="老师端" back="{{true}}" color="white" background="transparent"></navigation-bar>
+
+<view class="teacher-page">
+  <view class="teacher-header">
+    <view>
+      <text class="teacher-class">{{className}}</text>
+      <text class="teacher-date">{{dateLabel}} · 晚自习录入</text>
+    </view>
+    <text class="teacher-header-note">老师端</text>
+  </view>
+
+  <view class="teacher-board">
+    <view class="student-rail">
+      <scroll-view class="student-rail-scroll" scroll-y>
+        <view
+          wx:for="{{students}}"
+          wx:key="id"
+          class="student-item {{item.id === activeStudentId ? 'student-item-active' : ''}}"
+          data-id="{{item.id}}"
+          bindtap="handleStudentChange"
+        >
+          <text class="student-status student-status-{{item.status}}"></text>
+          <text class="student-rail-name">{{item.name}}</text>
+        </view>
+      </scroll-view>
+      <view class="student-add">+</view>
+    </view>
+
+    <view class="teacher-main">
+      <view class="student-summary">
+        <view>
+          <text class="student-summary-name">{{activeStudent.name}}</text>
+          <text class="student-summary-score">{{activeStudent.totalWeighted}} 分</text>
+        </view>
+        <text class="student-summary-status status-{{activeStudent.status}}">{{activeStudent.statusText}}</text>
+      </view>
+
+      <view class="teacher-ring-card">
+        <view class="teacher-ring-stage">
+          <view class="teacher-ring-shell"></view>
+          <canvas
+            type="2d"
+            id="teacherRings"
+            canvas-id="teacherRings"
+            class="teacher-ring-canvas"
+          ></canvas>
+        </view>
+      </view>
+
+      <view class="score-card">
+        <view wx:for="{{activeStudent.metrics}}" wx:key="key" class="score-row">
+          <view class="score-label-row">
+            <text class="score-label">{{item.label}}</text>
+            <text class="score-value" style="color: {{item.color}};">{{item.scoreText}} / 10</text>
+          </view>
+          <custom-slider
+            value="{{item.score}}"
+            max="10"
+            activeColor="{{item.color}}"
+            data-key="{{item.key}}"
+            bind:changing="handleScoreChange"
+            bind:change="handleScoreChange"
+          ></custom-slider>
+        </view>
+      </view>
+
+      <view class="feedback-card">
+        <text class="card-title">课堂反馈</text>
+        <textarea
+          class="feedback-input"
+          maxlength="300"
+          placeholder="例如：背诵到位，作业完成较认真，课堂纪律稳定。"
+          value="{{activeStudent.feedback}}"
+          bindinput="handleFeedbackInput"
+        />
+      </view>
+
+      <view class="photo-card">
+        <view class="photo-head">
+          <text class="card-title">作业照片</text>
+          <text class="photo-add" bindtap="handlePickImages">上传</text>
+        </view>
+        <view class="photo-list">
+          <view wx:for="{{activeStudent.photos}}" wx:key="*this" class="photo-item">
+            <image class="photo-image" src="{{item}}" mode="aspectFill"></image>
+            <view class="photo-remove" data-index="{{index}}" bindtap="handleRemovePhoto">×</view>
+          </view>
+          <view wx:if="{{!activeStudent.photos.length}}" class="photo-placeholder">还没有上传作业照片</view>
+        </view>
+      </view>
+
+      <view class="action-row">
+        <button class="secondary-btn" bindtap="handleSave">保存</button>
+        <button class="primary-btn" bindtap="handleSubmit">提交给家长</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="teacher-tab-bar">
+    <view class="teacher-tab-item teacher-tab-item-active">
+      <text class="teacher-tab-label">首页</text>
+    </view>
+    <view class="teacher-tab-item" bindtap="goHistory">
+      <text class="teacher-tab-label">历史</text>
+    </view>
+    <view class="teacher-tab-item" bindtap="goProfile">
+      <text class="teacher-tab-label">我的</text>
+    </view>
+  </view>
+</view>

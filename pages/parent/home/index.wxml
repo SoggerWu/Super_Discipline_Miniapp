@@ -1,0 +1,53 @@
+<navigation-bar title="家长端" back="{{true}}" color="black" background="#F4F6F8"></navigation-bar>
+
+<view class="parent-page">
+  <view class="hero-panel">
+    <text class="hero-student">{{student.name}}</text>
+    <text class="hero-class">{{student.className}} · 今日晚自习</text>
+
+    <view class="ring-stage">
+      <view class="ring-shell"></view>
+      <canvas
+        type="2d"
+        id="parentRings"
+        canvas-id="parentRings"
+        class="ring-canvas"
+      ></canvas>
+      <view class="ring-center">
+        <text class="ring-score">{{today.totalWeighted}}</text>
+      </view>
+    </view>
+
+    <view class="legend-row">
+      <view wx:for="{{today.items}}" wx:key="key" class="legend-item">
+        <text class="legend-dot" style="background: {{item.color}};"></text>
+        <text class="legend-label">{{item.label}}</text>
+        <text class="legend-value">{{item.scoreText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="content-card">
+    <text class="card-title">今日反馈</text>
+    <text class="card-copy">{{today.feedback}}</text>
+  </view>
+
+  <view class="content-card">
+    <text class="card-title">作业照片</text>
+    <view class="photo-chip-row">
+      <view wx:for="{{today.photos}}" wx:key="*this" class="photo-chip">{{item}}</view>
+    </view>
+  </view>
+
+  <view class="tab-bar">
+    <view class="tab-item tab-item-active">
+      <text class="tab-label">首页</text>
+    </view>
+    <view class="tab-item" bindtap="goHistory">
+      <text class="tab-label">历史</text>
+    </view>
+    <view class="tab-item" bindtap="goProfile">
+      <text class="tab-label">我的</text>
+    </view>
+  </view>
+</view>

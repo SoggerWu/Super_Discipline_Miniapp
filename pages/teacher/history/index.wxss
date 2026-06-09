@@ -1,0 +1,20 @@
+.placeholder-page {
+  min-height: 100vh;
+  padding: 28rpx 24rpx;
+  background: #f4f6f9;
+}
+
+.placeholder-title {
+  display: block;
+  font-size: 42rpx;
+  font-weight: 700;
+  color: #0f1721;
+}
+
+.placeholder-copy {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #64758b;
+}

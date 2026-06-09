@@ -1,567 +1,68 @@
 page {
   min-height: 100vh;
-  background: #0b0f15;
-  color: #f3f7fd;
+  background: linear-gradient(180deg, #0e1520, #091017);
+  color: #f3f6fb;
 }
 
-.page-shell {
-  min-height: 100vh;
-  padding-bottom: 190rpx;
-  box-sizing: border-box;
+.gateway-page {
+  padding: 28rpx 24rpx 40rpx;
 }
 
-.page-body {
-  padding: 20rpx 20rpx 220rpx;
+.gateway-head {
+  margin-bottom: 28rpx;
 }
 
-.score-page,
-.calendar-page {
-  box-sizing: border-box;
-}
-
-.calendar-page {
-  position: relative;
-}
-
-.hero-head,
-.calendar-head {
-  padding: 6rpx 2rpx 0;
-}
-
-.hero-kicker,
-.calendar-kicker {
+.gateway-kicker {
   display: block;
-  font-size: 18rpx;
-  letter-spacing: 4rpx;
+  font-size: 20rpx;
+  letter-spacing: 5rpx;
   text-transform: uppercase;
-  color: #90a0b8;
+  color: #8fa4c0;
 }
 
-.hero-title {
+.gateway-title {
   display: block;
-  margin-top: 10rpx;
-  font-size: 42rpx;
-  font-weight: 700;
-}
-
-.hero-subtitle,
-.calendar-subtitle {
-  display: block;
-  margin-top: 8rpx;
-  font-size: 20rpx;
-  color: #aab8ce;
-}
-
-.ring-stage {
-  position: relative;
-  width: 420rpx;
-  height: 420rpx;
-  margin: 20rpx auto 28rpx;
-}
-
-.ring-canvas {
-  position: relative;
-  z-index: 3;
-  width: 420rpx;
-  height: 420rpx;
-}
-
-.ring-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.ring-shadow {
-  position: absolute;
-  left: 40rpx;
-  top: 56rpx;
-  width: 340rpx;
-  height: 340rpx;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.16);
-  z-index: 1;
-}
-
-.ring-orb {
-  position: absolute;
-  left: 24rpx;
-  top: 24rpx;
-  width: 372rpx;
-  height: 372rpx;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 18%, rgba(255, 255, 255, 0) 36%),
-    radial-gradient(circle at center, rgba(14, 20, 29, 0.96) 0%, rgba(8, 11, 18, 0.98) 100%);
-  box-shadow: inset 0 0 0 1rpx rgba(255, 255, 255, 0.06);
-  z-index: 1;
-}
-
-.ring-glass {
-  position: absolute;
-  left: 10rpx;
-  top: 10rpx;
-  width: 400rpx;
-  height: 400rpx;
-  border-radius: 50%;
-  border: 1rpx solid rgba(255, 255, 255, 0.05);
-  z-index: 2;
-}
-
-.ring-score {
-  font-size: 58rpx;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.ring-legend {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10rpx;
-  margin-bottom: 24rpx;
-}
-
-.legend-pill {
-  display: flex;
-  align-items: center;
-  padding: 10rpx 16rpx;
-  border-radius: 999rpx;
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.legend-dot {
-  width: 12rpx;
-  height: 12rpx;
-  margin-right: 8rpx;
-  border-radius: 50%;
-}
-
-.legend-label {
-  font-size: 20rpx;
-  color: #dbe4f2;
-}
-
-.legend-value {
-  margin-left: 10rpx;
-  font-size: 20rpx;
-  font-weight: 600;
-}
-
-.section-block,
-.calendar-grid,
-.bottom-nav {
-  border: 1rpx solid rgba(255, 255, 255, 0.08);
-  background: rgba(15, 21, 31, 0.9);
-  box-shadow: 0 14rpx 34rpx rgba(0, 0, 0, 0.2);
-}
-
-.section-block {
-  margin-top: 18rpx;
-  padding: 20rpx 18rpx;
-  border-radius: 24rpx;
-}
-
-.student-panel {
-  margin-top: 0;
-}
-
-.section-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16rpx;
-}
-
-.section-title {
-  font-size: 28rpx;
-  font-weight: 600;
-}
-
-.section-meta {
-  font-size: 20rpx;
-  color: #95a4bb;
-}
-
-.student-scroll {
-  white-space: nowrap;
-}
-
-.student-row {
-  display: inline-flex;
-  gap: 14rpx;
-}
-
-.student-chip {
-  min-width: 170rpx;
-  padding: 18rpx 20rpx;
-  border-radius: 22rpx;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1rpx solid transparent;
-}
-
-.student-chip-active {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.student-name {
-  display: block;
-  font-size: 24rpx;
-  font-weight: 600;
-}
-
-.student-group {
-  display: block;
-  margin-top: 6rpx;
-  font-size: 18rpx;
-  color: #90a0b6;
-}
-
-.slider-item + .slider-item {
-  margin-top: 18rpx;
-}
-
-.slider-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-}
-
-.slider-title {
-  display: block;
-  font-size: 24rpx;
-  font-weight: 600;
-}
-
-.slider-desc {
-  display: block;
-  margin-top: 6rpx;
-  font-size: 18rpx;
-  color: #8ea0b9;
-}
-
-.slider-score {
-  font-size: 34rpx;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.score-slider {
-  margin-top: 8rpx;
-}
-
-.save-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 18rpx;
-  margin-top: 22rpx;
-  padding: 18rpx 16rpx;
-  border-radius: 20rpx;
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.save-copy {
-  width: 100%;
-}
-
-.save-title {
-  display: block;
-  font-size: 24rpx;
-  font-weight: 600;
-}
-
-.save-desc {
-  display: block;
-  margin-top: 6rpx;
-  font-size: 20rpx;
-  color: #90a2bc;
-}
-
-.save-button {
-  width: 100%;
-  max-width: 360rpx;
-  height: 68rpx;
-  line-height: 68rpx;
-  padding: 0;
-  border-radius: 999rpx;
-  color: #081019;
-  font-size: 22rpx;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  background: linear-gradient(135deg, #ff5e90, #53d8ff);
-}
-
-.save-button::after {
-  border: none;
-}
-
-.calendar-topline {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 8rpx;
-  gap: 12rpx;
-}
-
-.calendar-month-pill {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  min-width: 0;
-  padding: 6rpx;
-  border-radius: 999rpx;
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.calendar-title {
-  flex: 1;
-  font-size: 28rpx;
-  font-weight: 700;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.calendar-actions {
-  display: flex;
-  gap: 10rpx;
-  flex: none;
-}
-
-.month-switch {
-  width: 52rpx;
-  height: 52rpx;
-  line-height: 52rpx;
-  padding: 0;
-  border-radius: 50%;
-  color: #f3f7fd;
-  font-size: 28rpx;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.month-switch::after {
-  border: none;
-}
-
-.calendar-stats-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12rpx;
-  margin-top: 10rpx;
-}
-
-.calendar-student-wrap {
-  min-width: 0;
-}
-
-.calendar-student-name {
-  display: inline-block;
-  padding: 8rpx 16rpx;
-  border-radius: 999rpx;
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  font-size: 22rpx;
-  font-weight: 600;
-}
-
-.calendar-stats-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  font-size: 18rpx;
-  color: #9fb0c8;
-  white-space: nowrap;
-}
-
-.calendar-stat-dot {
-  margin: 0 8rpx;
-  color: #6f809b;
-}
-
-.weekend-toggle {
-  padding: 14rpx 18rpx;
-  border-radius: 999rpx;
-  background: rgba(255, 255, 255, 0.08);
-  color: #dbe4f2;
-  font-size: 18rpx;
-  line-height: 1;
-  text-align: center;
-}
-
-.calendar-student-scroll {
-  margin-top: 16rpx;
-}
-
-.calendar-student-chip {
-  min-width: 132rpx;
-  padding: 14rpx 18rpx;
-}
-
-.calendar-grid {
-  display: flex;
-  flex-wrap: wrap;
   margin-top: 12rpx;
-  padding: 10rpx;
-  border-radius: 24rpx;
-}
-
-.weekday-cell {
-  padding: 6rpx 0 10rpx;
-  box-sizing: border-box;
-  font-size: 18rpx;
-  text-align: center;
-  color: #899bb5;
-}
-
-.calendar-cell {
-  min-height: 116rpx;
-  padding: 8rpx 2rpx;
-  margin-bottom: 6rpx;
-  box-sizing: border-box;
-  border-radius: 18rpx;
-  background: rgba(255, 255, 255, 0.03);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.calendar-cell-active {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1rpx solid rgba(255, 255, 255, 0.1);
-}
-
-.calendar-cell-placeholder {
-  background: transparent;
-  border: none;
-}
-
-.calendar-day {
-  font-size: 18rpx;
-  color: #e7edf7;
-  margin-top: 4rpx;
-  margin-bottom: 10rpx;
-}
-
-.calendar-day-today {
-  color: #53d8ff;
-}
-
-.calendar-ring-canvas {
-  width: 68rpx;
-  height: 68rpx;
-}
-
-.bottom-nav {
-  position: fixed;
-  left: 20rpx;
-  right: 20rpx;
-  bottom: 20rpx;
-  z-index: 30;
-  padding: 10rpx;
-  border-radius: 999rpx;
-  display: flex;
-  gap: 8rpx;
-  box-sizing: border-box;
-}
-
-.nav-item {
-  flex: 1;
-  height: 76rpx;
-  border-radius: 999rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.nav-item-active {
-  background: linear-gradient(135deg, rgba(255, 79, 133, 0.94), rgba(83, 216, 255, 0.88));
-}
-
-.nav-label {
-  font-size: 24rpx;
-  font-weight: 600;
-}
-
-.editor-mask {
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-  background: rgba(0, 0, 0, 0.42);
-}
-
-.editor-sheet {
-  position: fixed;
-  left: 20rpx;
-  right: 20rpx;
-  bottom: 20rpx;
-  z-index: 41;
-  padding: 22rpx 20rpx calc(22rpx + env(safe-area-inset-bottom));
-  border-radius: 28rpx;
-  border: 1rpx solid rgba(255, 255, 255, 0.08);
-  background: #151b25;
-  box-shadow: 0 18rpx 48rpx rgba(0, 0, 0, 0.3);
-}
-
-.editor-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16rpx;
-  margin-bottom: 18rpx;
-}
-
-.editor-title {
-  display: block;
-  font-size: 28rpx;
+  font-size: 52rpx;
   font-weight: 700;
 }
 
-.editor-subtitle {
+.gateway-subtitle {
   display: block;
-  margin-top: 8rpx;
-  font-size: 20rpx;
-  color: #9fb0c8;
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: #b2bfd3;
 }
 
-.editor-close {
-  padding: 10rpx 16rpx;
+.gateway-card {
+  margin-top: 20rpx;
+  padding: 28rpx 24rpx;
+  border-radius: 28rpx;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1rpx solid rgba(255, 255, 255, 0.08);
+}
+
+.gateway-card-tag {
+  display: inline-block;
+  padding: 8rpx 14rpx;
   border-radius: 999rpx;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(83, 216, 255, 0.14);
+  color: #8ee8ff;
   font-size: 20rpx;
-  color: #dbe4f2;
 }
 
-.editor-item + .editor-item {
+.gateway-card-title {
+  display: block;
   margin-top: 18rpx;
-}
-
-.editor-save-button {
-  width: 100%;
-  height: 72rpx;
-  line-height: 72rpx;
-  margin-top: 24rpx;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999rpx;
-  color: #081019;
-  font-size: 22rpx;
+  font-size: 34rpx;
   font-weight: 600;
-  background: linear-gradient(135deg, #ff5e90, #53d8ff);
 }
 
-.editor-save-button::after {
-  border: none;
+.gateway-card-copy {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: #aab7cb;
 }

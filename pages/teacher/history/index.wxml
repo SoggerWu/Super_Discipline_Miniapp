@@ -1,0 +1,5 @@
+<navigation-bar title="老师端历史" back="{{true}}" color="black" background="#F4F6F9"></navigation-bar>
+<view class="placeholder-page">
+  <text class="placeholder-title">老师端历史页</text>
+  <text class="placeholder-copy">这里后面放日期筛选、班级筛选、学生记录列表和详情入口。</text>
+</view>
