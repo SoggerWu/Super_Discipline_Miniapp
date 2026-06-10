@@ -1,5 +1,179 @@
-<navigation-bar title="老师端历史" back="{{true}}" color="black" background="#F4F6F9"></navigation-bar>
-<view class="placeholder-page">
-  <text class="placeholder-title">老师端历史页</text>
-  <text class="placeholder-copy">这里后面放日期筛选、班级筛选、学生记录列表和详情入口。</text>
+<navigation-bar title="超级纪律（教师端）" back="{{true}}" color="black" background="#F6F8FB"></navigation-bar>
+
+<view class="history-page">
+  <view class="history-topbar">
+    <text class="history-title">记录</text>
+    <text class="history-subtitle">{{activeStudentName ? activeStudentName + ' · 晚自习情况' : '选择学生查看记录'}}</text>
+  </view>
+
+  <scroll-view class="class-tabs" scroll-x enable-flex show-scrollbar="{{false}}">
+    <view
+      wx:for="{{classes}}"
+      wx:key="key"
+      class="class-tab {{item.key === activeClassKey ? 'class-tab-active' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="handleClassChange"
+    >
+      <text class="class-tab-label">{{item.label}}</text>
+    </view>
+  </scroll-view>
+
+  <scroll-view class="student-chips" scroll-x enable-flex show-scrollbar="{{false}}">
+    <view
+      wx:for="{{students}}"
+      wx:key="id"
+      class="student-chip {{item.id === activeStudentId ? 'student-chip-active' : ''}}"
+      data-id="{{item.id}}"
+      bindtap="handleStudentChange"
+    >
+      <text class="student-chip-name">{{item.name}}</text>
+    </view>
+  </scroll-view>
+
+  <view class="calendar-shell">
+    <view class="calendar-head">
+      <view class="month-header">
+        <view class="month-switch month-switch-left" bindtap="handlePrevMonth">
+          <view class="month-chevron month-chevron-left"></view>
+        </view>
+        <text class="month-label">{{monthLabel}}</text>
+        <view class="month-switch month-switch-right" bindtap="handleNextMonth">
+          <view class="month-chevron month-chevron-right"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="weekdays">
+      <view wx:for="{{weekdays}}" wx:key="*this" class="weekday" style="width: {{100 / columns}}%;">
+        {{item}}
+      </view>
+    </view>
+
+    <view class="days-grid">
+      <view
+        wx:for="{{days}}"
+        wx:key="id"
+        class="day-cell {{item.isWeekend ? 'day-cell-weekend' : ''}} {{item.empty ? '' : 'day-cell-tappable'}}"
+        style="width: {{100 / columns}}%;"
+        data-date-key="{{item.dateKey}}"
+        bindtap="openDayDetail"
+      >
+        <block wx:if="{{!item.empty}}">
+          <text class="day-num">{{item.day}}</text>
+          <canvas type="2d" class="history-ring-canvas" canvas-id="{{item.canvasId}}"></canvas>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <view
+    class="weekend-toggle {{showWeekends ? 'weekend-toggle-active' : ''}}"
+    style="top: {{toggleTop}}px;"
+    catchtouchstart="handleToggleTouchStart"
+    catchtouchmove="handleToggleTouchMove"
+    catchtouchend="handleToggleTouchEnd"
+  >
+    <view class="weekend-toggle-pill">
+      <text class="weekend-toggle-arrow">{{showWeekends ? '>' : '<'}}</text>
+      <view class="weekend-toggle-grip">
+        <text class="weekend-toggle-dot"></text>
+        <text class="weekend-toggle-dot"></text>
+        <text class="weekend-toggle-dot"></text>
+      </view>
+    </view>
+  </view>
+
+  <view class="tab-bar">
+    <view class="tab-item" bindtap="goHome">
+      <view class="tab-icon tab-icon-home">
+        <view class="tab-home-roof"></view>
+        <view class="tab-home-body"></view>
+      </view>
+      <text class="tab-label">首页</text>
+    </view>
+    <view class="tab-item tab-item-active">
+      <view class="tab-icon tab-icon-record">
+        <text class="tab-record-bar tab-record-bar-1"></text>
+        <text class="tab-record-bar tab-record-bar-2"></text>
+        <text class="tab-record-bar tab-record-bar-3"></text>
+        <text class="tab-record-bar tab-record-bar-4"></text>
+      </view>
+      <text class="tab-label">记录</text>
+    </view>
+    <view class="tab-item" bindtap="goProfile">
+      <view class="tab-icon tab-icon-profile">
+        <view class="tab-profile-head"></view>
+        <view class="tab-profile-body"></view>
+      </view>
+      <text class="tab-label">我的</text>
+    </view>
+  </view>
+
+  <view wx:if="{{showDetailModal}}" class="modal-mask" bindtap="closeDetailModal"></view>
+
+  <view wx:if="{{showDetailModal}}" class="detail-modal">
+    <view class="detail-modal-head">
+      <view>
+        <text class="detail-modal-title">{{modalDateLabel}}</text>
+        <text class="detail-modal-subtitle">{{activeStudentName}} · 修改评分</text>
+      </view>
+      <view class="detail-modal-head-right">
+        <text class="detail-modal-score">{{modalTotal}}</text>
+        <view class="detail-close" bindtap="closeDetailModal">
+          <view class="detail-close-line detail-close-line-a"></view>
+          <view class="detail-close-line detail-close-line-b"></view>
+        </view>
+      </view>
+    </view>
+
+    <scroll-view class="detail-modal-body" scroll-y>
+      <view wx:for="{{modalMetrics}}" wx:key="key" class="detail-score-row">
+        <view class="detail-score-label-row">
+          <text class="detail-score-label">{{item.label}}</text>
+          <text class="detail-score-value" style="color: {{item.color}};">{{item.scoreText}} / 10</text>
+        </view>
+        <custom-slider
+          value="{{item.score}}"
+          max="10"
+          activeColor="{{item.color}}"
+          data-key="{{item.key}}"
+          bind:changing="handleModalScoreChange"
+          bind:change="handleModalScoreChange"
+        ></custom-slider>
+      </view>
+
+      <view class="detail-feedback-card">
+        <text class="detail-card-title">课堂反馈</text>
+        <textarea
+          class="detail-feedback-input"
+          maxlength="300"
+          placeholder="补充这一天的课堂表现与反馈。"
+          value="{{modalFeedback}}"
+          bindinput="handleModalFeedbackInput"
+        />
+      </view>
+
+      <view class="detail-photo-card">
+        <view class="detail-photo-head">
+          <text class="detail-card-title">作业照片</text>
+          <text class="detail-photo-add" bindtap="handleModalPickImages">上传</text>
+        </view>
+        <view wx:if="{{modalPhotos.length}}" class="detail-photo-list">
+          <view wx:for="{{modalPhotos}}" wx:key="*this" class="detail-photo-item">
+            <image class="detail-photo-image" src="{{item}}" mode="aspectFill"></image>
+            <view class="detail-photo-remove" data-index="{{index}}" bindtap="handleModalRemovePhoto">
+              <view class="detail-photo-remove-line detail-photo-remove-line-a"></view>
+              <view class="detail-photo-remove-line detail-photo-remove-line-b"></view>
+            </view>
+          </view>
+        </view>
+        <text wx:else class="detail-photo-empty">当天还没有上传作业照片</text>
+      </view>
+    </scroll-view>
+
+    <view class="detail-modal-actions">
+      <button class="detail-secondary-btn" bindtap="handleModalSave">保存</button>
+      <button class="detail-primary-btn" bindtap="handleModalSubmit">提交</button>
+    </view>
+  </view>
 </view>

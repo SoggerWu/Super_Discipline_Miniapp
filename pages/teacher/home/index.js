@@ -36,6 +36,10 @@ Page({
     );
   },
 
+  onShow() {
+    this.refreshRoster();
+  },
+
   onReady() {
     this.drawTeacherRings();
   },
@@ -50,9 +54,7 @@ Page({
   },
 
   syncView() {
-    const baseStudents = store
-      .getStudents()
-      .filter((item) => item.classKey === this.data.activeClassKey);
+    const baseStudents = store.getStudents().filter((item) => item.classKey === this.data.activeClassKey);
     const students = store.buildTeacherRail(baseStudents, this.data.records, this.data.dateLabel);
     const fallbackStudentId = students[0] ? students[0].id : '';
     const activeStudentId = students.some((item) => item.id === this.data.activeStudentId)
@@ -62,14 +64,7 @@ Page({
       ? store.buildTeacherStudentView(students, this.data.records, this.data.dateLabel, activeStudentId)
       : null;
 
-    this.setData(
-      {
-        students,
-        activeStudentId,
-        activeStudent,
-      },
-      () => this.drawTeacherRings()
-    );
+    this.setData({ students, activeStudentId, activeStudent }, () => this.drawTeacherRings());
   },
 
   drawTeacherRings() {
@@ -111,12 +106,7 @@ Page({
     const lineWidth = (half - outerPadding - centerRadius - gap * (ringCount - 1)) / ringCount;
     const outerRadius = half - outerPadding - lineWidth / 2;
 
-    return {
-      outerRadius,
-      lineWidth,
-      gap,
-      centerRadius,
-    };
+    return { outerRadius, lineWidth, gap, centerRadius };
   },
 
   drawRing(ctx, centerX, centerY, radius, lineWidth, progress, color) {
@@ -149,13 +139,7 @@ Page({
   handleClassChange(event) {
     const { key } = event.currentTarget.dataset;
     if (!key || key === this.data.activeClassKey) return;
-    this.setData(
-      {
-        activeClassKey: key,
-        activeStudentId: '',
-      },
-      () => this.syncView()
-    );
+    this.setData({ activeClassKey: key, activeStudentId: '' }, () => this.syncView());
   },
 
   handleStudentChange(event) {
@@ -239,20 +223,12 @@ Page({
       return result;
     }, {});
 
-    const records = store.updateStudentRecord(
-      this.data.records,
-      this.data.dateLabel,
-      this.data.activeStudentId,
-      {
-        status: activeStudent.status === 'submitted' ? 'submitted' : 'draft',
-        scores: {
-          ...currentScores,
-          [key]: value,
-        },
-        feedback: activeStudent.feedback,
-        photos: activeStudent.photos,
-      }
-    );
+    const records = store.updateStudentRecord(this.data.records, this.data.dateLabel, this.data.activeStudentId, {
+      status: activeStudent.status === 'submitted' ? 'submitted' : 'draft',
+      scores: { ...currentScores, [key]: value },
+      feedback: activeStudent.feedback,
+      photos: activeStudent.photos,
+    });
 
     this.setData({ records }, () => this.syncView());
   },
@@ -267,17 +243,12 @@ Page({
       return result;
     }, {});
 
-    const records = store.updateStudentRecord(
-      this.data.records,
-      this.data.dateLabel,
-      this.data.activeStudentId,
-      {
-        status: activeStudent.status === 'submitted' ? 'submitted' : 'draft',
-        scores: currentScores,
-        feedback,
-        photos: activeStudent.photos,
-      }
-    );
+    const records = store.updateStudentRecord(this.data.records, this.data.dateLabel, this.data.activeStudentId, {
+      status: activeStudent.status === 'submitted' ? 'submitted' : 'draft',
+      scores: currentScores,
+      feedback,
+      photos: activeStudent.photos,
+    });
 
     this.setData({ records }, () => this.syncView());
   },
@@ -296,17 +267,12 @@ Page({
           return result;
         }, {});
 
-        const records = store.updateStudentRecord(
-          this.data.records,
-          this.data.dateLabel,
-          this.data.activeStudentId,
-          {
-            status: activeStudent.status === 'submitted' ? 'submitted' : 'draft',
-            scores: currentScores,
-            feedback: activeStudent.feedback,
-            photos: [...activeStudent.photos, ...photos].slice(0, 3),
-          }
-        );
+        const records = store.updateStudentRecord(this.data.records, this.data.dateLabel, this.data.activeStudentId, {
+          status: activeStudent.status === 'submitted' ? 'submitted' : 'draft',
+          scores: currentScores,
+          feedback: activeStudent.feedback,
+          photos: [...activeStudent.photos, ...photos].slice(0, 3),
+        });
 
         this.setData({ records }, () => this.syncView());
       },
@@ -323,17 +289,12 @@ Page({
       return result;
     }, {});
 
-    const records = store.updateStudentRecord(
-      this.data.records,
-      this.data.dateLabel,
-      this.data.activeStudentId,
-      {
-        status: activeStudent.status,
-        scores: currentScores,
-        feedback: activeStudent.feedback,
-        photos: activeStudent.photos.filter((_, photoIndex) => photoIndex !== index),
-      }
-    );
+    const records = store.updateStudentRecord(this.data.records, this.data.dateLabel, this.data.activeStudentId, {
+      status: activeStudent.status,
+      scores: currentScores,
+      feedback: activeStudent.feedback,
+      photos: activeStudent.photos.filter((_, photoIndex) => photoIndex !== index),
+    });
 
     this.setData({ records }, () => this.syncView());
   },
@@ -347,17 +308,12 @@ Page({
       return result;
     }, {});
 
-    const records = store.updateStudentRecord(
-      this.data.records,
-      this.data.dateLabel,
-      this.data.activeStudentId,
-      {
-        status: 'draft',
-        scores: currentScores,
-        feedback: activeStudent.feedback,
-        photos: activeStudent.photos,
-      }
-    );
+    const records = store.updateStudentRecord(this.data.records, this.data.dateLabel, this.data.activeStudentId, {
+      status: 'draft',
+      scores: currentScores,
+      feedback: activeStudent.feedback,
+      photos: activeStudent.photos,
+    });
 
     this.setData({ records }, () => {
       this.syncView();
@@ -374,17 +330,12 @@ Page({
       return result;
     }, {});
 
-    const records = store.updateStudentRecord(
-      this.data.records,
-      this.data.dateLabel,
-      this.data.activeStudentId,
-      {
-        status: 'submitted',
-        scores: currentScores,
-        feedback: activeStudent.feedback,
-        photos: activeStudent.photos,
-      }
-    );
+    const records = store.updateStudentRecord(this.data.records, this.data.dateLabel, this.data.activeStudentId, {
+      status: 'submitted',
+      scores: currentScores,
+      feedback: activeStudent.feedback,
+      photos: activeStudent.photos,
+    });
 
     this.setData({ records }, () => {
       this.syncView();
@@ -392,11 +343,11 @@ Page({
     });
   },
 
-  goHistory() {
-    wx.navigateTo({ url: '/pages/teacher/history/index' });
+  goRecord() {
+    wx.redirectTo({ url: '/pages/teacher/history/index' });
   },
 
   goProfile() {
-    wx.navigateTo({ url: '/pages/teacher/profile/index' });
+    wx.redirectTo({ url: '/pages/teacher/profile/index' });
   },
 });

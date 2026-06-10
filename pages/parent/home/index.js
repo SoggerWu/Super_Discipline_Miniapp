@@ -94,11 +94,11 @@ Page({
     ctx.fill();
   },
 
-  goHistory() {
-    wx.navigateTo({ url: '/pages/parent/history/index' });
+  goRecord() {
+    wx.redirectTo({ url: '/pages/parent/history/index' });
   },
 
   goProfile() {
-    wx.navigateTo({ url: '/pages/parent/profile/index' });
+    wx.redirectTo({ url: '/pages/parent/profile/index' });
   },
 });

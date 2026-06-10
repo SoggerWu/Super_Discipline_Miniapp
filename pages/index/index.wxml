@@ -4,18 +4,18 @@
   <view class="gateway-head">
     <text class="gateway-kicker">Role Gateway</text>
     <text class="gateway-title">先看页面骨架</text>
-    <text class="gateway-subtitle">我们先把老师端和家长端的小样搭起来，后面再接真实登录和后端。</text>
+    <text class="gateway-subtitle">我们先把教师端和家长端的小样搭起来，后面再接真实登录和后端。</text>
   </view>
 
   <view class="gateway-card" bindtap="goTeacher">
-    <text class="gateway-card-tag">老师端</text>
+    <text class="gateway-card-tag">教师端</text>
     <text class="gateway-card-title">晚自习录入工作台</text>
     <text class="gateway-card-copy">学生侧边栏、四维评分、课堂反馈、作业照片上传。</text>
   </view>
 
   <view class="gateway-card" bindtap="goParent">
     <text class="gateway-card-tag">家长端</text>
-    <text class="gateway-card-title">今日情况 + 历史回看</text>
-    <text class="gateway-card-copy">首页看当天记录，历史页看日历，底部三栏结构保留。</text>
+    <text class="gateway-card-title">今日情况 + 记录回看</text>
+    <text class="gateway-card-copy">首页看当天记录，记录页看日历，底部三栏结构保留。</text>
   </view>
 </view>

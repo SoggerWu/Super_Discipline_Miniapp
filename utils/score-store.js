@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'super-discipline-records-v3';
+const STORAGE_KEY = 'super-discipline-records-v4';
 
 const METRICS = [
   { key: 'homework', label: '作业', weight: 0.35 },
@@ -8,20 +8,20 @@ const METRICS = [
 ];
 
 const DEFAULT_CLASSES = [
-  { key: 'class-1', label: '维鹰班' },
-  { key: 'class-2', label: '晋级班' },
-  { key: 'class-3', label: '晚间班' },
+  { key: 'class-1', label: '雏鹰班' },
+  { key: 'class-2', label: '进阶班' },
+  { key: 'class-3', label: '晚训班' },
 ];
 
 const DEFAULT_STUDENTS = [
-  { id: 's1', name: '林浩', className: '维鹰班', classKey: 'class-1' },
-  { id: 's2', name: '许然', className: '维鹰班', classKey: 'class-1' },
-  { id: 's3', name: '周宁', className: '维鹰班', classKey: 'class-1' },
-  { id: 's4', name: '陈语', className: '维鹰班', classKey: 'class-1' },
-  { id: 's5', name: '孙天明', className: '晋级班', classKey: 'class-2' },
-  { id: 's6', name: '李若妍', className: '晋级班', classKey: 'class-2' },
-  { id: 's7', name: '朱冰宸', className: '晚间班', classKey: 'class-3' },
-  { id: 's8', name: '于祥元', className: '晚间班', classKey: 'class-3' },
+  { id: 's1', name: '林浩', className: '雏鹰班', classKey: 'class-1' },
+  { id: 's2', name: '许然', className: '雏鹰班', classKey: 'class-1' },
+  { id: 's3', name: '周宁', className: '雏鹰班', classKey: 'class-1' },
+  { id: 's4', name: '陈语', className: '雏鹰班', classKey: 'class-1' },
+  { id: 's5', name: '孙天昊', className: '进阶班', classKey: 'class-2' },
+  { id: 's6', name: '李若妍', className: '进阶班', classKey: 'class-2' },
+  { id: 's7', name: '朱冰宁', className: '晚训班', classKey: 'class-3' },
+  { id: 's8', name: '于祥元', className: '晚训班', classKey: 'class-3' },
 ];
 
 const SCORE_PATTERNS = {
@@ -75,6 +75,9 @@ const SCORE_PATTERNS = {
   ],
 };
 
+const WORKDAY_LABELS = ['一', '二', '三', '四', '五'];
+const FULL_WEEK_LABELS = ['一', '二', '三', '四', '五', '六', '日'];
+
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
@@ -85,16 +88,25 @@ function pad(value) {
 
 function getTodayInfo() {
   const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1;
-  const day = now.getDate();
+  return buildMonthInfo(now.getFullYear(), now.getMonth() + 1, now.getDate());
+}
+
+function buildMonthInfo(year, month, day = 1) {
   return {
     year,
     month,
     day,
     dateKey: `${year}-${pad(month)}-${pad(day)}`,
     monthKey: `${year}-${pad(month)}`,
-    monthLabel: `${year} 年 ${month} 月`,
+    monthLabel: `${year}年${month}月`,
+  };
+}
+
+function shiftMonth(year, month, offset) {
+  const next = new Date(year, month - 1 + offset, 1);
+  return {
+    year: next.getFullYear(),
+    month: next.getMonth() + 1,
   };
 }
 
@@ -122,14 +134,14 @@ function normalizeScores(scores) {
 }
 
 function metricColor(score) {
-  if (score === 10) return '#3f86ff';
+  if (score >= 10) return '#3f86ff';
   if (score >= 8) return '#36d66b';
   if (score >= 6) return '#f3af3c';
   return '#ea5a58';
 }
 
 function formatScore(score) {
-  return Number.isInteger(score) ? String(score) : score.toFixed(1);
+  return String(Math.round(score));
 }
 
 function statusText(status) {
@@ -140,9 +152,7 @@ function statusText(status) {
 
 function calculateWeightedScore(scores) {
   const normalized = normalizeScores(scores);
-  return Math.round(
-    METRICS.reduce((sum, metric) => sum + normalized[metric.key] * 10 * metric.weight, 0)
-  );
+  return Math.round(METRICS.reduce((sum, metric) => sum + normalized[metric.key] * metric.weight, 0));
 }
 
 function mapMetrics(scores) {
@@ -154,14 +164,6 @@ function mapMetrics(scores) {
     percent: normalized[metric.key] / 10,
     color: metricColor(normalized[metric.key]),
   }));
-}
-
-function buildStateFromDefaults() {
-  return {
-    classes: clone(DEFAULT_CLASSES),
-    students: clone(DEFAULT_STUDENTS),
-    records: generateDefaultRecords(clone(DEFAULT_STUDENTS), getTodayInfo()),
-  };
 }
 
 function generateDefaultRecords(students, todayInfo) {
@@ -188,6 +190,14 @@ function generateDefaultRecords(students, todayInfo) {
   }
 
   return records;
+}
+
+function buildStateFromDefaults() {
+  return {
+    classes: clone(DEFAULT_CLASSES),
+    students: clone(DEFAULT_STUDENTS),
+    records: generateDefaultRecords(clone(DEFAULT_STUDENTS), getTodayInfo()),
+  };
 }
 
 function getState() {
@@ -234,16 +244,18 @@ function getStudentRecord(records, dateKey, studentId) {
   };
 }
 
-function ensureStudentRecords(records, studentId, todayInfo) {
+function ensureStudentRecords(records, studentId, monthInfo) {
   const nextRecords = clone(records);
-  const daysInMonth = getDaysInMonth(todayInfo.year, todayInfo.month);
+  const daysInMonth = getDaysInMonth(monthInfo.year, monthInfo.month);
   const patternSource = SCORE_PATTERNS[studentId] || SCORE_PATTERNS.s1;
 
   for (let day = 1; day <= daysInMonth; day += 1) {
-    const weekday = new Date(todayInfo.year, todayInfo.month - 1, day).getDay();
+    const weekday = new Date(monthInfo.year, monthInfo.month - 1, day).getDay();
     if (weekday === 0 || weekday === 6) continue;
-    const dateKey = `${todayInfo.monthKey}-${pad(day)}`;
+
+    const dateKey = `${monthInfo.monthKey}-${pad(day)}`;
     nextRecords[dateKey] = nextRecords[dateKey] || {};
+
     if (!nextRecords[dateKey][studentId]) {
       const pattern = patternSource[(day - 1) % patternSource.length];
       nextRecords[dateKey][studentId] = {
@@ -276,8 +288,7 @@ function addClass(label) {
   if (!trimmed) return null;
 
   const state = getState();
-  const key = `class-${Date.now()}`;
-  const nextClass = { key, label: trimmed };
+  const nextClass = { key: `class-${Date.now()}`, label: trimmed };
   state.classes.push(nextClass);
   setState(state);
   return clone(nextClass);
@@ -334,6 +345,7 @@ function buildParentHome(studentId) {
   const students = getStudents();
   const student = students.find((item) => item.id === studentId) || students[0];
   const record = getStudentRecord(records, today.dateKey, student.id);
+
   return {
     student,
     today: {
@@ -346,43 +358,48 @@ function buildParentHome(studentId) {
   };
 }
 
-function buildParentHistory(studentId) {
+function buildParentHistory(studentId, options = {}) {
   const today = getTodayInfo();
+  const monthInfo = buildMonthInfo(options.year || today.year, options.month || today.month);
+  const showWeekends = Boolean(options.showWeekends);
   const records = getRecords();
-  const daysInMonth = getDaysInMonth(today.year, today.month);
-  const weekdays = ['一', '二', '三', '四', '五'];
-  const firstDay = new Date(today.year, today.month - 1, 1).getDay();
-  const offset = firstDay === 0 ? 6 : firstDay - 1;
+  const daysInMonth = getDaysInMonth(monthInfo.year, monthInfo.month);
+  const weekdays = showWeekends ? FULL_WEEK_LABELS : WORKDAY_LABELS;
+  const columns = showWeekends ? 7 : 5;
+  const firstWeekday = new Date(monthInfo.year, monthInfo.month - 1, 1).getDay();
+  const mondayOffset = firstWeekday === 0 ? 6 : firstWeekday - 1;
+  const prefix = showWeekends ? mondayOffset : Math.min(mondayOffset, 5);
   const days = [];
 
-  for (let index = 0; index < offset; index += 1) {
-    const weekdayIndex = index % 7;
-    if (weekdayIndex < 5) {
-      days.push({ id: `empty-${index}`, empty: true, cellWidth: '20%' });
-    }
+  for (let index = 0; index < prefix; index += 1) {
+    days.push({ id: `empty-${index}`, empty: true });
   }
 
   for (let day = 1; day <= daysInMonth; day += 1) {
-    const date = new Date(today.year, today.month - 1, day);
+    const date = new Date(monthInfo.year, monthInfo.month - 1, day);
     const weekday = date.getDay();
-    if (weekday === 0 || weekday === 6) continue;
-    const dateKey = `${today.monthKey}-${pad(day)}`;
+    const isWeekend = weekday === 0 || weekday === 6;
+    if (!showWeekends && isWeekend) continue;
+
+    const dateKey = `${monthInfo.monthKey}-${pad(day)}`;
     const record = getStudentRecord(records, dateKey, studentId);
     days.push({
       id: dateKey,
       dateKey,
       day: String(day),
-      score: `${calculateWeightedScore(record.scores)}%`,
-      totalWeighted: calculateWeightedScore(record.scores),
+      isWeekend,
       metrics: mapMetrics(record.scores),
-      cellWidth: '20%',
-      canvasId: `history-ring-${day}`,
+      canvasId: `history-ring-${monthInfo.monthKey}-${day}`,
     });
   }
 
   return {
-    monthLabel: today.monthLabel,
+    monthLabel: monthInfo.monthLabel,
+    year: monthInfo.year,
+    month: monthInfo.month,
     weekdays,
+    columns,
+    showWeekends,
     days,
   };
 }
@@ -392,6 +409,8 @@ module.exports = {
   STORAGE_KEY,
   addClass,
   addStudent,
+  buildMonthInfo,
+  shiftMonth,
   getTodayInfo,
   getStudents,
   getTeacherClasses,

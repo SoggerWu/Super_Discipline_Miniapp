@@ -57,12 +57,7 @@
       <view wx:if="{{activeStudent}}" class="teacher-ring-card">
         <view class="teacher-ring-stage">
           <view class="teacher-ring-shell"></view>
-          <canvas
-            type="2d"
-            id="teacherRings"
-            canvas-id="teacherRings"
-            class="teacher-ring-canvas"
-          ></canvas>
+          <canvas type="2d" id="teacherRings" canvas-id="teacherRings" class="teacher-ring-canvas"></canvas>
           <view class="teacher-ring-center">
             <text class="teacher-ring-score">{{activeStudent.totalWeighted}}</text>
           </view>
@@ -120,12 +115,26 @@
 
   <view class="teacher-tab-bar">
     <view class="teacher-tab-item teacher-tab-item-active">
+      <view class="teacher-tab-icon teacher-tab-icon-home">
+        <view class="teacher-tab-home-roof"></view>
+        <view class="teacher-tab-home-body"></view>
+      </view>
       <text class="teacher-tab-label">首页</text>
     </view>
-    <view class="teacher-tab-item" bindtap="goHistory">
-      <text class="teacher-tab-label">历史</text>
+    <view class="teacher-tab-item" bindtap="goRecord">
+      <view class="teacher-tab-icon teacher-tab-icon-record">
+        <text class="teacher-tab-record-bar teacher-tab-record-bar-1"></text>
+        <text class="teacher-tab-record-bar teacher-tab-record-bar-2"></text>
+        <text class="teacher-tab-record-bar teacher-tab-record-bar-3"></text>
+        <text class="teacher-tab-record-bar teacher-tab-record-bar-4"></text>
+      </view>
+      <text class="teacher-tab-label">记录</text>
     </view>
     <view class="teacher-tab-item" bindtap="goProfile">
+      <view class="teacher-tab-icon teacher-tab-icon-profile">
+        <view class="teacher-tab-profile-head"></view>
+        <view class="teacher-tab-profile-body"></view>
+      </view>
       <text class="teacher-tab-label">我的</text>
     </view>
   </view>

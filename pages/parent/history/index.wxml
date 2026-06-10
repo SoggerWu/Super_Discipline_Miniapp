@@ -1,34 +1,135 @@
-<navigation-bar title="家长端历史" back="{{true}}" color="black" background="#F6F7F9"></navigation-bar>
+<navigation-bar title="超级纪律（家长端）" back="{{true}}" color="black" background="#F6F8FB"></navigation-bar>
 
 <view class="history-page">
-  <view class="history-head">
-    <text class="history-title">{{month}}</text>
-    <text class="history-subtitle">林浩 · 工作日晚自习记录</text>
+  <view class="history-topbar">
+    <text class="history-title">记录</text>
+    <text class="history-subtitle">林浩 · 晚自习情况</text>
   </view>
 
-  <view class="calendar-card">
-    <view wx:for="{{weekdays}}" wx:key="*this" class="weekday">{{item}}</view>
-    <view wx:for="{{days}}" wx:key="index" class="day-cell">
-      <block wx:if="{{item.day}}">
-        <text class="day-num">{{item.day}}</text>
-        <canvas
-          type="2d"
-          class="history-ring-canvas"
-          canvas-id="{{item.canvasId}}"
-        ></canvas>
-      </block>
+  <view class="calendar-shell">
+    <view class="calendar-head">
+      <view class="month-header">
+        <view class="month-switch month-switch-left" bindtap="handlePrevMonth">
+          <view class="month-chevron month-chevron-left"></view>
+        </view>
+        <text class="month-label">{{monthLabel}}</text>
+        <view class="month-switch month-switch-right" bindtap="handleNextMonth">
+          <view class="month-chevron month-chevron-right"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="weekdays">
+      <view wx:for="{{weekdays}}" wx:key="*this" class="weekday" style="width: {{100 / columns}}%;">
+        {{item}}
+      </view>
+    </view>
+
+    <view class="days-grid">
+      <view
+        wx:for="{{days}}"
+        wx:key="id"
+        class="day-cell {{item.isWeekend ? 'day-cell-weekend' : ''}} {{item.empty ? '' : 'day-cell-tappable'}}"
+        style="width: {{100 / columns}}%;"
+        data-date-key="{{item.dateKey}}"
+        bindtap="openDayDetail"
+      >
+        <block wx:if="{{!item.empty}}">
+          <text class="day-num">{{item.day}}</text>
+          <canvas type="2d" class="history-ring-canvas" canvas-id="{{item.canvasId}}"></canvas>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <view
+    class="weekend-toggle {{showWeekends ? 'weekend-toggle-active' : ''}}"
+    style="top: {{toggleTop}}px;"
+    catchtouchstart="handleToggleTouchStart"
+    catchtouchmove="handleToggleTouchMove"
+    catchtouchend="handleToggleTouchEnd"
+  >
+    <view class="weekend-toggle-pill">
+      <text class="weekend-toggle-arrow">{{showWeekends ? '>' : '<'}}</text>
+      <view class="weekend-toggle-grip">
+        <text class="weekend-toggle-dot"></text>
+        <text class="weekend-toggle-dot"></text>
+        <text class="weekend-toggle-dot"></text>
+      </view>
     </view>
   </view>
 
   <view class="tab-bar">
     <view class="tab-item" bindtap="goHome">
+      <view class="tab-icon tab-icon-home">
+        <view class="tab-home-roof"></view>
+        <view class="tab-home-body"></view>
+      </view>
       <text class="tab-label">首页</text>
     </view>
     <view class="tab-item tab-item-active">
-      <text class="tab-label">历史</text>
+      <view class="tab-icon tab-icon-record">
+        <text class="tab-record-bar tab-record-bar-1"></text>
+        <text class="tab-record-bar tab-record-bar-2"></text>
+        <text class="tab-record-bar tab-record-bar-3"></text>
+        <text class="tab-record-bar tab-record-bar-4"></text>
+      </view>
+      <text class="tab-label">记录</text>
     </view>
     <view class="tab-item" bindtap="goProfile">
+      <view class="tab-icon tab-icon-profile">
+        <view class="tab-profile-head"></view>
+        <view class="tab-profile-body"></view>
+      </view>
       <text class="tab-label">我的</text>
     </view>
+  </view>
+
+  <view wx:if="{{showDetailModal}}" class="modal-mask" bindtap="closeDetailModal"></view>
+
+  <view wx:if="{{showDetailModal}}" class="detail-modal">
+    <view class="detail-modal-head">
+      <view>
+        <text class="detail-modal-title">{{modalDateLabel}}</text>
+        <text class="detail-modal-subtitle">当日晚自习详情</text>
+      </view>
+      <view class="detail-modal-head-right">
+        <text class="detail-modal-score">{{modalTotal}}</text>
+        <view class="detail-close" bindtap="closeDetailModal">
+          <view class="detail-close-line detail-close-line-a"></view>
+          <view class="detail-close-line detail-close-line-b"></view>
+        </view>
+      </view>
+    </view>
+
+    <scroll-view class="detail-modal-body" scroll-y>
+      <view class="detail-status-chip">{{modalStatus}}</view>
+
+      <view class="detail-rings-grid">
+        <view wx:for="{{modalMetrics}}" wx:key="key" class="detail-metric-card">
+          <text class="detail-metric-name">{{item.label}}</text>
+          <text class="detail-metric-score" style="color: {{item.color}};">{{item.scoreText}}</text>
+        </view>
+      </view>
+
+      <view class="detail-feedback-card">
+        <text class="detail-card-title">课堂反馈</text>
+        <text class="detail-feedback-copy">{{modalFeedback}}</text>
+      </view>
+
+      <view class="detail-photo-card">
+        <text class="detail-card-title">作业照片</text>
+        <view wx:if="{{modalPhotos.length}}" class="detail-photo-list">
+          <image
+            wx:for="{{modalPhotos}}"
+            wx:key="*this"
+            class="detail-photo-image"
+            src="{{item}}"
+            mode="aspectFill"
+          ></image>
+        </view>
+        <text wx:else class="detail-photo-empty">当天没有上传作业照片</text>
+      </view>
+    </scroll-view>
   </view>
 </view>
