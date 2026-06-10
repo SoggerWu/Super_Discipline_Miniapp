@@ -1,4 +1,4 @@
-<navigation-bar title="家长端" back="{{true}}" color="black" background="#F4F6F8"></navigation-bar>
+<navigation-bar title="超级纪律（家长端）" back="{{true}}" color="black" background="#F4F6F8"></navigation-bar>
 
 <view class="parent-page">
   <view class="hero-panel">

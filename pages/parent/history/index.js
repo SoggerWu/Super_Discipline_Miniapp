@@ -50,17 +50,33 @@ Page({
 
         const centerX = width / 2;
         const centerY = height / 2;
-        const baseSize = Math.min(width, height);
-        const lineWidth = Math.max(3, Math.round(baseSize * 0.09));
-        const gap = Math.max(2, Math.round(baseSize * 0.03));
-        const outerRadius = baseSize / 2 - lineWidth - 1;
+        const config = this.getRingConfig(width, height, day.metrics.length);
 
         day.metrics.forEach((metric, metricIndex) => {
-          const radius = outerRadius - metricIndex * (lineWidth + gap);
-          this.drawRing(ctx, centerX, centerY, radius, lineWidth, metric.percent, metric.color);
+          const radius = config.outerRadius - metricIndex * (config.lineWidth + config.gap);
+          this.drawRing(ctx, centerX, centerY, radius, config.lineWidth, metric.percent, metric.color);
         });
+
+        this.drawCenterDisc(ctx, centerX, centerY, config.centerRadius);
       });
     });
+  },
+
+  getRingConfig(width, height, ringCount) {
+    const baseSize = Math.min(width, height);
+    const half = baseSize / 2;
+    const outerPadding = Math.max(2, Math.round(baseSize * 0.035));
+    const gap = Math.max(1, Math.round(baseSize * 0.012));
+    const centerRadius = Math.max(4, Math.round(baseSize * 0.1));
+    const lineWidth = (half - outerPadding - centerRadius - gap * (ringCount - 1)) / ringCount;
+    const outerRadius = half - outerPadding - lineWidth / 2;
+
+    return {
+      outerRadius,
+      lineWidth,
+      gap,
+      centerRadius,
+    };
   },
 
   drawRing(ctx, centerX, centerY, radius, lineWidth, progress, color) {
@@ -72,7 +88,7 @@ Page({
     ctx.arc(centerX, centerY, radius, startAngle, endAngle, false);
     ctx.lineWidth = lineWidth;
     ctx.lineCap = 'round';
-    ctx.strokeStyle = '#173743';
+    ctx.strokeStyle = '#d6e0e5';
     ctx.stroke();
 
     ctx.beginPath();
@@ -81,6 +97,13 @@ Page({
     ctx.lineCap = 'round';
     ctx.strokeStyle = color;
     ctx.stroke();
+  },
+
+  drawCenterDisc(ctx, centerX, centerY, radius) {
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, false);
+    ctx.fillStyle = '#edf3f6';
+    ctx.fill();
   },
 
   goHome() {

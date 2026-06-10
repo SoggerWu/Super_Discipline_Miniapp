@@ -1,41 +1,60 @@
-<navigation-bar title="老师端" back="{{true}}" color="white" background="transparent"></navigation-bar>
+<navigation-bar title="超级纪律（教师端）" back="{{true}}" color="black" background="#F6F8FB"></navigation-bar>
 
 <view class="teacher-page">
-  <view class="teacher-header">
-    <view>
-      <text class="teacher-class">{{className}}</text>
-      <text class="teacher-date">{{dateLabel}} · 晚自习录入</text>
+  <view class="teacher-topbar">
+    <view class="teacher-brand-row">
+      <text class="teacher-brand">{{title}}</text>
+      <text class="teacher-date">{{dateLabel}}</text>
     </view>
-    <text class="teacher-header-note">老师端</text>
+
+    <scroll-view class="class-tabs" scroll-x enable-flex show-scrollbar="{{false}}">
+      <view
+        wx:for="{{classes}}"
+        wx:key="key"
+        class="class-tab {{item.key === activeClassKey ? 'class-tab-active' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="handleClassChange"
+      >
+        <text class="class-tab-label">{{item.label}}</text>
+      </view>
+      <view class="class-add-tab" bindtap="openClassModal">
+        <text class="class-add-icon">+</text>
+      </view>
+    </scroll-view>
   </view>
 
   <view class="teacher-board">
-    <view class="student-rail">
-      <scroll-view class="student-rail-scroll" scroll-y>
+    <view class="student-sidebar">
+      <view class="student-sidebar-head">
+        <text class="student-sidebar-title">学生名单</text>
+      </view>
+      <scroll-view class="student-sidebar-scroll" scroll-y>
         <view
           wx:for="{{students}}"
           wx:key="id"
-          class="student-item {{item.id === activeStudentId ? 'student-item-active' : ''}}"
+          class="student-row {{item.id === activeStudentId ? 'student-row-active' : ''}}"
           data-id="{{item.id}}"
           bindtap="handleStudentChange"
         >
-          <text class="student-status student-status-{{item.status}}"></text>
-          <text class="student-rail-name">{{item.name}}</text>
+          <text class="student-dot student-dot-{{item.status}}"></text>
+          <text class="student-name">{{item.name}}</text>
+        </view>
+        <view class="student-add-inline" bindtap="openStudentModal">
+          <text class="student-add-plus">+</text>
         </view>
       </scroll-view>
-      <view class="student-add">+</view>
     </view>
 
-    <view class="teacher-main">
-      <view class="student-summary">
-        <view>
+    <scroll-view class="teacher-main" scroll-y>
+      <view wx:if="{{activeStudent}}" class="student-summary">
+        <view class="student-summary-main">
           <text class="student-summary-name">{{activeStudent.name}}</text>
-          <text class="student-summary-score">{{activeStudent.totalWeighted}} 分</text>
+          <text class="student-summary-meta">{{activeStudent.className}} · 今晚评分</text>
         </view>
         <text class="student-summary-status status-{{activeStudent.status}}">{{activeStudent.statusText}}</text>
       </view>
 
-      <view class="teacher-ring-card">
+      <view wx:if="{{activeStudent}}" class="teacher-ring-card">
         <view class="teacher-ring-stage">
           <view class="teacher-ring-shell"></view>
           <canvas
@@ -44,10 +63,13 @@
             canvas-id="teacherRings"
             class="teacher-ring-canvas"
           ></canvas>
+          <view class="teacher-ring-center">
+            <text class="teacher-ring-score">{{activeStudent.totalWeighted}}</text>
+          </view>
         </view>
       </view>
 
-      <view class="score-card">
+      <view wx:if="{{activeStudent}}" class="score-card">
         <view wx:for="{{activeStudent.metrics}}" wx:key="key" class="score-row">
           <view class="score-label-row">
             <text class="score-label">{{item.label}}</text>
@@ -64,18 +86,18 @@
         </view>
       </view>
 
-      <view class="feedback-card">
+      <view wx:if="{{activeStudent}}" class="feedback-card">
         <text class="card-title">课堂反馈</text>
         <textarea
           class="feedback-input"
           maxlength="300"
-          placeholder="例如：背诵到位，作业完成较认真，课堂纪律稳定。"
+          placeholder="例如：作业完成认真，背诵状态稳定，课堂纪律良好。"
           value="{{activeStudent.feedback}}"
           bindinput="handleFeedbackInput"
         />
       </view>
 
-      <view class="photo-card">
+      <view wx:if="{{activeStudent}}" class="photo-card">
         <view class="photo-head">
           <text class="card-title">作业照片</text>
           <text class="photo-add" bindtap="handlePickImages">上传</text>
@@ -89,11 +111,11 @@
         </view>
       </view>
 
-      <view class="action-row">
+      <view wx:if="{{activeStudent}}" class="action-row">
         <button class="secondary-btn" bindtap="handleSave">保存</button>
         <button class="primary-btn" bindtap="handleSubmit">提交给家长</button>
       </view>
-    </view>
+    </scroll-view>
   </view>
 
   <view class="teacher-tab-bar">
@@ -105,6 +127,36 @@
     </view>
     <view class="teacher-tab-item" bindtap="goProfile">
       <text class="teacher-tab-label">我的</text>
+    </view>
+  </view>
+
+  <view wx:if="{{showStudentModal || showClassModal}}" class="modal-mask" bindtap="closeModal"></view>
+
+  <view wx:if="{{showStudentModal}}" class="modal-card">
+    <text class="modal-title">添加学生</text>
+    <input
+      class="modal-input"
+      placeholder="输入学生姓名"
+      value="{{newStudentName}}"
+      bindinput="handleStudentNameInput"
+    />
+    <view class="modal-actions">
+      <button class="modal-cancel" bindtap="closeModal">取消</button>
+      <button class="modal-confirm" bindtap="handleAddStudent">确定</button>
+    </view>
+  </view>
+
+  <view wx:if="{{showClassModal}}" class="modal-card">
+    <text class="modal-title">添加班级</text>
+    <input
+      class="modal-input"
+      placeholder="输入班级名称"
+      value="{{newClassName}}"
+      bindinput="handleClassNameInput"
+    />
+    <view class="modal-actions">
+      <button class="modal-cancel" bindtap="closeModal">取消</button>
+      <button class="modal-confirm" bindtap="handleAddClass">确定</button>
     </view>
   </view>
 </view>
