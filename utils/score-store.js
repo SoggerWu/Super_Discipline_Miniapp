@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'super-discipline-records-v2';
+const STORAGE_KEY = 'super-discipline-records-v3';
 
 const METRICS = [
   { key: 'homework', label: '作业', weight: 0.35 },
@@ -7,11 +7,21 @@ const METRICS = [
   { key: 'discipline', label: '纪律', weight: 0.25 },
 ];
 
-const STUDENTS = [
-  { id: 's1', name: '林浩', className: '高一(2)班' },
-  { id: 's2', name: '许然', className: '高一(2)班' },
-  { id: 's3', name: '周宁', className: '高一(2)班' },
-  { id: 's4', name: '陈语', className: '高一(2)班' },
+const DEFAULT_CLASSES = [
+  { key: 'class-1', label: '维鹰班' },
+  { key: 'class-2', label: '晋级班' },
+  { key: 'class-3', label: '晚间班' },
+];
+
+const DEFAULT_STUDENTS = [
+  { id: 's1', name: '林浩', className: '维鹰班', classKey: 'class-1' },
+  { id: 's2', name: '许然', className: '维鹰班', classKey: 'class-1' },
+  { id: 's3', name: '周宁', className: '维鹰班', classKey: 'class-1' },
+  { id: 's4', name: '陈语', className: '维鹰班', classKey: 'class-1' },
+  { id: 's5', name: '孙天明', className: '晋级班', classKey: 'class-2' },
+  { id: 's6', name: '李若妍', className: '晋级班', classKey: 'class-2' },
+  { id: 's7', name: '朱冰宸', className: '晚间班', classKey: 'class-3' },
+  { id: 's8', name: '于祥元', className: '晚间班', classKey: 'class-3' },
 ];
 
 const SCORE_PATTERNS = {
@@ -39,7 +49,35 @@ const SCORE_PATTERNS = {
     { homework: 6, recite: 7, practice: 6, discipline: 7 },
     { homework: 8, recite: 8, practice: 7, discipline: 8 },
   ],
+  s5: [
+    { homework: 9, recite: 8, practice: 8, discipline: 9 },
+    { homework: 8, recite: 8, practice: 9, discipline: 8 },
+    { homework: 9, recite: 9, practice: 8, discipline: 9 },
+    { homework: 10, recite: 8, practice: 9, discipline: 9 },
+  ],
+  s6: [
+    { homework: 7, recite: 7, practice: 8, discipline: 7 },
+    { homework: 8, recite: 7, practice: 8, discipline: 8 },
+    { homework: 8, recite: 8, practice: 7, discipline: 8 },
+    { homework: 9, recite: 8, practice: 8, discipline: 8 },
+  ],
+  s7: [
+    { homework: 6, recite: 7, practice: 7, discipline: 6 },
+    { homework: 7, recite: 7, practice: 8, discipline: 7 },
+    { homework: 8, recite: 7, practice: 8, discipline: 7 },
+    { homework: 8, recite: 8, practice: 8, discipline: 8 },
+  ],
+  s8: [
+    { homework: 10, recite: 9, practice: 9, discipline: 10 },
+    { homework: 9, recite: 10, practice: 9, discipline: 9 },
+    { homework: 9, recite: 9, practice: 10, discipline: 9 },
+    { homework: 10, recite: 9, practice: 10, discipline: 10 },
+  ],
 };
+
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
 
 function pad(value) {
   return String(value).padStart(2, '0');
@@ -118,11 +156,15 @@ function mapMetrics(scores) {
   }));
 }
 
-function clone(value) {
-  return JSON.parse(JSON.stringify(value));
+function buildStateFromDefaults() {
+  return {
+    classes: clone(DEFAULT_CLASSES),
+    students: clone(DEFAULT_STUDENTS),
+    records: generateDefaultRecords(clone(DEFAULT_STUDENTS), getTodayInfo()),
+  };
 }
 
-function generateDefaultRecords(todayInfo) {
+function generateDefaultRecords(students, todayInfo) {
   const records = {};
   const daysInMonth = getDaysInMonth(todayInfo.year, todayInfo.month);
 
@@ -133,8 +175,9 @@ function generateDefaultRecords(todayInfo) {
     const dateKey = `${todayInfo.monthKey}-${pad(day)}`;
     records[dateKey] = {};
 
-    STUDENTS.forEach((student) => {
-      const pattern = SCORE_PATTERNS[student.id][(day - 1) % SCORE_PATTERNS[student.id].length];
+    students.forEach((student, index) => {
+      const patternSource = SCORE_PATTERNS[student.id] || SCORE_PATTERNS.s1;
+      const pattern = patternSource[(day - 1 + index) % patternSource.length];
       records[dateKey][student.id] = {
         scores: normalizeScores(pattern),
         feedback: '',
@@ -147,25 +190,39 @@ function generateDefaultRecords(todayInfo) {
   return records;
 }
 
-function getRecords() {
+function getState() {
   try {
     const stored = wx.getStorageSync(STORAGE_KEY);
-    if (stored && typeof stored === 'object' && Object.keys(stored).length) {
+    if (stored && typeof stored === 'object' && stored.classes && stored.students && stored.records) {
       return stored;
     }
   } catch (error) {}
 
-  const defaults = generateDefaultRecords(getTodayInfo());
+  const defaults = buildStateFromDefaults();
   wx.setStorageSync(STORAGE_KEY, defaults);
   return defaults;
 }
 
+function setState(state) {
+  wx.setStorageSync(STORAGE_KEY, state);
+}
+
+function getRecords() {
+  return clone(getState().records);
+}
+
 function setRecords(records) {
-  wx.setStorageSync(STORAGE_KEY, records);
+  const state = getState();
+  state.records = clone(records);
+  setState(state);
 }
 
 function getStudents() {
-  return clone(STUDENTS);
+  return clone(getState().students);
+}
+
+function getTeacherClasses() {
+  return clone(getState().classes);
 }
 
 function getStudentRecord(records, dateKey, studentId) {
@@ -175,6 +232,30 @@ function getStudentRecord(records, dateKey, studentId) {
     photos: [],
     status: 'idle',
   };
+}
+
+function ensureStudentRecords(records, studentId, todayInfo) {
+  const nextRecords = clone(records);
+  const daysInMonth = getDaysInMonth(todayInfo.year, todayInfo.month);
+  const patternSource = SCORE_PATTERNS[studentId] || SCORE_PATTERNS.s1;
+
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    const weekday = new Date(todayInfo.year, todayInfo.month - 1, day).getDay();
+    if (weekday === 0 || weekday === 6) continue;
+    const dateKey = `${todayInfo.monthKey}-${pad(day)}`;
+    nextRecords[dateKey] = nextRecords[dateKey] || {};
+    if (!nextRecords[dateKey][studentId]) {
+      const pattern = patternSource[(day - 1) % patternSource.length];
+      nextRecords[dateKey][studentId] = {
+        scores: normalizeScores(pattern),
+        feedback: '',
+        photos: [],
+        status: 'idle',
+      };
+    }
+  }
+
+  return nextRecords;
 }
 
 function updateStudentRecord(records, dateKey, studentId, payload) {
@@ -188,6 +269,39 @@ function updateStudentRecord(records, dateKey, studentId, payload) {
   };
   setRecords(nextRecords);
   return nextRecords;
+}
+
+function addClass(label) {
+  const trimmed = String(label || '').trim();
+  if (!trimmed) return null;
+
+  const state = getState();
+  const key = `class-${Date.now()}`;
+  const nextClass = { key, label: trimmed };
+  state.classes.push(nextClass);
+  setState(state);
+  return clone(nextClass);
+}
+
+function addStudent({ name, classKey }) {
+  const trimmedName = String(name || '').trim();
+  if (!trimmedName || !classKey) return null;
+
+  const state = getState();
+  const targetClass = state.classes.find((item) => item.key === classKey);
+  if (!targetClass) return null;
+
+  const nextStudent = {
+    id: `s-${Date.now()}`,
+    name: trimmedName,
+    className: targetClass.label,
+    classKey,
+  };
+
+  state.students.push(nextStudent);
+  state.records = ensureStudentRecords(state.records, nextStudent.id, getTodayInfo());
+  setState(state);
+  return clone(nextStudent);
 }
 
 function buildTeacherStudentView(students, records, dateKey, studentId) {
@@ -276,8 +390,11 @@ function buildParentHistory(studentId) {
 module.exports = {
   METRICS,
   STORAGE_KEY,
+  addClass,
+  addStudent,
   getTodayInfo,
   getStudents,
+  getTeacherClasses,
   getRecords,
   setRecords,
   normalizeScores,

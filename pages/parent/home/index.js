@@ -39,16 +39,32 @@ Page({
 
       const centerX = width / 2;
       const centerY = height / 2;
-      const baseSize = Math.min(width, height);
-      const lineWidth = Math.max(18, Math.round(baseSize * 0.052));
-      const gap = Math.max(4, Math.round(baseSize * 0.012));
-      const outerRadius = baseSize / 2 - lineWidth / 2 - 14;
+      const config = this.getRingConfig(width, height, this.data.today.items.length);
 
       this.data.today.items.forEach((item, index) => {
-        const radius = outerRadius - index * (lineWidth + gap);
-        this.drawRing(ctx, centerX, centerY, radius, lineWidth, item.percent, item.color);
+        const radius = config.outerRadius - index * (config.lineWidth + config.gap);
+        this.drawRing(ctx, centerX, centerY, radius, config.lineWidth, item.percent, item.color);
       });
+
+      this.drawCenterDisc(ctx, centerX, centerY, config.centerRadius);
     });
+  },
+
+  getRingConfig(width, height, ringCount) {
+    const baseSize = Math.min(width, height);
+    const half = baseSize / 2;
+    const outerPadding = Math.max(12, Math.round(baseSize * 0.035));
+    const gap = Math.max(3, Math.round(baseSize * 0.01));
+    const centerRadius = Math.max(42, Math.round(baseSize * 0.115));
+    const lineWidth = (half - outerPadding - centerRadius - gap * (ringCount - 1)) / ringCount;
+    const outerRadius = half - outerPadding - lineWidth / 2;
+
+    return {
+      outerRadius,
+      lineWidth,
+      gap,
+      centerRadius,
+    };
   },
 
   drawRing(ctx, centerX, centerY, radius, lineWidth, progress, color) {
@@ -60,7 +76,7 @@ Page({
     ctx.arc(centerX, centerY, radius, startAngle, endAngle, false);
     ctx.lineWidth = lineWidth;
     ctx.lineCap = 'round';
-    ctx.strokeStyle = '#d8e3e8';
+    ctx.strokeStyle = '#d6e0e5';
     ctx.stroke();
 
     ctx.beginPath();
@@ -69,6 +85,13 @@ Page({
     ctx.lineCap = 'round';
     ctx.strokeStyle = color;
     ctx.stroke();
+  },
+
+  drawCenterDisc(ctx, centerX, centerY, radius) {
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, false);
+    ctx.fillStyle = '#edf3f6';
+    ctx.fill();
   },
 
   goHistory() {
