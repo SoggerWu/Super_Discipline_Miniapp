@@ -1,9 +1,9 @@
-<navigation-bar title="家长端我的" back="{{true}}" color="black" background="#F6F7F9"></navigation-bar>
+<navigation-bar title="超级纪律（家长端）" back="{{true}}" color="black" background="#F6F8FB"></navigation-bar>
 
 <view class="profile-page">
   <view class="profile-card">
     <text class="profile-name">王女士</text>
-    <text class="profile-meta">已绑定：林浩 · 高一(2)班</text>
+    <text class="profile-meta">已绑定：林浩 · 雏鹰班</text>
   </view>
 
   <view class="profile-list">
@@ -14,12 +14,26 @@
 
   <view class="tab-bar">
     <view class="tab-item" bindtap="goHome">
+      <view class="tab-icon tab-icon-home">
+        <view class="tab-home-roof"></view>
+        <view class="tab-home-body"></view>
+      </view>
       <text class="tab-label">首页</text>
     </view>
-    <view class="tab-item" bindtap="goHistory">
-      <text class="tab-label">历史</text>
+    <view class="tab-item" bindtap="goRecord">
+      <view class="tab-icon tab-icon-record">
+        <text class="tab-record-bar tab-record-bar-1"></text>
+        <text class="tab-record-bar tab-record-bar-2"></text>
+        <text class="tab-record-bar tab-record-bar-3"></text>
+        <text class="tab-record-bar tab-record-bar-4"></text>
+      </view>
+      <text class="tab-label">记录</text>
     </view>
     <view class="tab-item tab-item-active">
+      <view class="tab-icon tab-icon-profile">
+        <view class="tab-profile-head"></view>
+        <view class="tab-profile-body"></view>
+      </view>
       <text class="tab-label">我的</text>
     </view>
   </view>

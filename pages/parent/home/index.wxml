@@ -7,12 +7,7 @@
 
     <view class="ring-stage">
       <view class="ring-shell"></view>
-      <canvas
-        type="2d"
-        id="parentRings"
-        canvas-id="parentRings"
-        class="ring-canvas"
-      ></canvas>
+      <canvas type="2d" id="parentRings" canvas-id="parentRings" class="ring-canvas"></canvas>
       <view class="ring-center">
         <text class="ring-score">{{today.totalWeighted}}</text>
       </view>
@@ -41,12 +36,26 @@
 
   <view class="tab-bar">
     <view class="tab-item tab-item-active">
+      <view class="tab-icon tab-icon-home">
+        <view class="tab-home-roof"></view>
+        <view class="tab-home-body"></view>
+      </view>
       <text class="tab-label">首页</text>
     </view>
-    <view class="tab-item" bindtap="goHistory">
-      <text class="tab-label">历史</text>
+    <view class="tab-item" bindtap="goRecord">
+      <view class="tab-icon tab-icon-record">
+        <text class="tab-record-bar tab-record-bar-1"></text>
+        <text class="tab-record-bar tab-record-bar-2"></text>
+        <text class="tab-record-bar tab-record-bar-3"></text>
+        <text class="tab-record-bar tab-record-bar-4"></text>
+      </view>
+      <text class="tab-label">记录</text>
     </view>
     <view class="tab-item" bindtap="goProfile">
+      <view class="tab-icon tab-icon-profile">
+        <view class="tab-profile-head"></view>
+        <view class="tab-profile-body"></view>
+      </view>
       <text class="tab-label">我的</text>
     </view>
   </view>

@@ -1,5 +1,40 @@
-<navigation-bar title="老师端我的" back="{{true}}" color="black" background="#F4F6F9"></navigation-bar>
-<view class="placeholder-page">
-  <text class="placeholder-title">老师端我的</text>
-  <text class="placeholder-copy">这里后面放教师姓名、所带班级、账号设置和退出登录。</text>
+<navigation-bar title="超级纪律（教师端）" back="{{true}}" color="black" background="#F6F8FB"></navigation-bar>
+
+<view class="profile-page">
+  <view class="profile-card">
+    <text class="profile-name">赵老师</text>
+    <text class="profile-meta">当前班级：雏鹰班 · 晚自习管理</text>
+  </view>
+
+  <view class="profile-list">
+    <view class="profile-item">账号设置</view>
+    <view class="profile-item">班级管理</view>
+    <view class="profile-item">退出登录</view>
+  </view>
+
+  <view class="tab-bar">
+    <view class="tab-item" bindtap="goHome">
+      <view class="tab-icon tab-icon-home">
+        <view class="tab-home-roof"></view>
+        <view class="tab-home-body"></view>
+      </view>
+      <text class="tab-label">首页</text>
+    </view>
+    <view class="tab-item" bindtap="goRecord">
+      <view class="tab-icon tab-icon-record">
+        <text class="tab-record-bar tab-record-bar-1"></text>
+        <text class="tab-record-bar tab-record-bar-2"></text>
+        <text class="tab-record-bar tab-record-bar-3"></text>
+        <text class="tab-record-bar tab-record-bar-4"></text>
+      </view>
+      <text class="tab-label">记录</text>
+    </view>
+    <view class="tab-item tab-item-active">
+      <view class="tab-icon tab-icon-profile">
+        <view class="tab-profile-head"></view>
+        <view class="tab-profile-body"></view>
+      </view>
+      <text class="tab-label">我的</text>
+    </view>
+  </view>
 </view>

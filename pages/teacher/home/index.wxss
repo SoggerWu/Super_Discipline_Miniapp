@@ -198,7 +198,7 @@ page {
   padding: 24rpx 22rpx;
   margin-bottom: 16rpx;
   border-radius: 34rpx;
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.965);
   border: 1rpx solid rgba(15, 23, 42, 0.05);
   box-shadow: 0 12rpx 30rpx rgba(69, 87, 109, 0.06);
 }
@@ -268,8 +268,8 @@ page {
   width: 328rpx;
   height: 328rpx;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 28%, #fbfdfe 0%, #f2f7fa 52%, #e5eef3 100%);
-  box-shadow: 0 12rpx 28rpx rgba(91, 118, 140, 0.12);
+  background: radial-gradient(circle at 35% 28%, #fcfeff 0%, #f5f9fb 54%, #e9f0f4 100%);
+  box-shadow: 0 10rpx 24rpx rgba(91, 118, 140, 0.1);
 }
 
 .teacher-ring-canvas {
@@ -338,7 +338,7 @@ page {
   margin-top: 14rpx;
   padding: 18rpx;
   border-radius: 24rpx;
-  background: #f4f7fa;
+  background: #f6f9fb;
   font-size: 24rpx;
   box-sizing: border-box;
 }
@@ -397,7 +397,7 @@ page {
   width: 100%;
   padding: 28rpx 0;
   border-radius: 20rpx;
-  background: #f4f6f9;
+  background: #f6f9fb;
   text-align: center;
   font-size: 22rpx;
   color: #8191a7;
@@ -440,40 +440,120 @@ page {
 
 .teacher-tab-bar {
   position: fixed;
-  left: 20rpx;
-  right: 20rpx;
-  bottom: 20rpx;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 18;
   display: flex;
-  padding: 10rpx;
-  border-radius: 999rpx;
-  background: rgba(255, 255, 255, 0.94);
-  border: 1rpx solid rgba(15, 23, 42, 0.05);
-  box-shadow: 0 10rpx 24rpx rgba(66, 82, 101, 0.08);
+  align-items: flex-start;
+  justify-content: space-around;
+  height: 118rpx;
+  padding: 14rpx 28rpx 0;
+  background: rgba(255, 255, 255, 0.98);
+  border-top: 1rpx solid rgba(16, 24, 32, 0.08);
+  box-sizing: border-box;
 }
 
 .teacher-tab-item {
-  flex: 1;
-  height: 76rpx;
+  width: 160rpx;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  border-radius: 999rpx;
+  color: #8b929d;
 }
 
 .teacher-tab-item-active {
-  background: #101820;
+  color: #46b56f;
+}
+
+.teacher-tab-icon {
+  position: relative;
+  width: 40rpx;
+  height: 40rpx;
+  margin-bottom: 6rpx;
 }
 
 .teacher-tab-label {
-  font-size: 24rpx;
+  font-size: 21rpx;
   line-height: 1;
-  font-weight: 600;
-  color: #101820;
+  color: inherit;
 }
 
-.teacher-tab-item-active .teacher-tab-label {
-  color: #ffffff;
+.teacher-tab-home-roof {
+  position: absolute;
+  left: 10rpx;
+  top: 5rpx;
+  width: 20rpx;
+  height: 20rpx;
+  border-top: 4rpx solid currentColor;
+  border-left: 4rpx solid currentColor;
+  transform: rotate(45deg);
+  border-top-left-radius: 4rpx;
+}
+
+.teacher-tab-home-body {
+  position: absolute;
+  left: 8rpx;
+  bottom: 4rpx;
+  width: 24rpx;
+  height: 17rpx;
+  border: 4rpx solid currentColor;
+  border-top: none;
+  border-bottom-left-radius: 6rpx;
+  border-bottom-right-radius: 6rpx;
+  box-sizing: border-box;
+}
+
+.teacher-tab-record-bar {
+  position: absolute;
+  bottom: 4rpx;
+  width: 4rpx;
+  border-radius: 999rpx;
+  background: currentColor;
+}
+
+.teacher-tab-record-bar-1 {
+  left: 5rpx;
+  height: 16rpx;
+}
+
+.teacher-tab-record-bar-2 {
+  left: 14rpx;
+  height: 26rpx;
+}
+
+.teacher-tab-record-bar-3 {
+  left: 23rpx;
+  height: 20rpx;
+}
+
+.teacher-tab-record-bar-4 {
+  left: 32rpx;
+  height: 31rpx;
+}
+
+.teacher-tab-profile-head {
+  position: absolute;
+  left: 12rpx;
+  top: 3rpx;
+  width: 17rpx;
+  height: 17rpx;
+  border: 4rpx solid currentColor;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.teacher-tab-profile-body {
+  position: absolute;
+  left: 5rpx;
+  bottom: 4rpx;
+  width: 30rpx;
+  height: 14rpx;
+  border: 4rpx solid currentColor;
+  border-top-left-radius: 18rpx;
+  border-top-right-radius: 18rpx;
+  border-bottom: none;
+  box-sizing: border-box;
 }
 
 .modal-mask {

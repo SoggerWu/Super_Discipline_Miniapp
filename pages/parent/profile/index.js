@@ -1,9 +1,9 @@
 Page({
   goHome() {
-    wx.navigateBack();
+    wx.redirectTo({ url: '/pages/parent/home/index' });
   },
 
-  goHistory() {
-    wx.navigateTo({ url: '/pages/parent/history/index' });
+  goRecord() {
+    wx.redirectTo({ url: '/pages/parent/history/index' });
   },
 });
