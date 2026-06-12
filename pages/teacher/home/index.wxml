@@ -1,33 +1,24 @@
-<navigation-bar title="超级纪律（教师端）" back="{{true}}" color="black" background="#F6F8FB"></navigation-bar>
+<navigation-bar title="超级纪律（教师端）" back="{{true}}" color="black" background="#F3F5F8"></navigation-bar>
 
 <view class="teacher-page">
   <view class="teacher-topbar">
-    <view class="teacher-brand-row">
-      <text class="teacher-brand">{{title}}</text>
+    <view class="teacher-topbar-meta">
+      <view class="teacher-class-pill">
+        <text class="teacher-class-pill-label">{{classLabel}}</text>
+      </view>
       <text class="teacher-date">{{dateLabel}}</text>
     </view>
-
-    <scroll-view class="class-tabs" scroll-x enable-flex show-scrollbar="{{false}}">
-      <view
-        wx:for="{{classes}}"
-        wx:key="key"
-        class="class-tab {{item.key === activeClassKey ? 'class-tab-active' : ''}}"
-        data-key="{{item.key}}"
-        bindtap="handleClassChange"
-      >
-        <text class="class-tab-label">{{item.label}}</text>
-      </view>
-      <view class="class-add-tab" bindtap="openClassModal">
-        <text class="class-add-icon">+</text>
-      </view>
-    </scroll-view>
   </view>
 
   <view class="teacher-board">
     <view class="student-sidebar">
       <view class="student-sidebar-head">
-        <text class="student-sidebar-title">学生名单</text>
+        <text class="student-sidebar-title">学生</text>
+        <view class="student-add-button" bindtap="openStudentModal">
+          <text class="student-add-plus">+</text>
+        </view>
       </view>
+
       <scroll-view class="student-sidebar-scroll" scroll-y>
         <view
           wx:for="{{students}}"
@@ -36,79 +27,91 @@
           data-id="{{item.id}}"
           bindtap="handleStudentChange"
         >
+          <view class="student-row-main">
+            <text class="student-name">{{item.name}}</text>
+          </view>
           <text class="student-dot student-dot-{{item.status}}"></text>
-          <text class="student-name">{{item.name}}</text>
-        </view>
-        <view class="student-add-inline" bindtap="openStudentModal">
-          <text class="student-add-plus">+</text>
         </view>
       </scroll-view>
     </view>
 
     <scroll-view class="teacher-main" scroll-y>
-      <view wx:if="{{activeStudent}}" class="student-summary">
-        <view class="student-summary-main">
-          <text class="student-summary-name">{{activeStudent.name}}</text>
-          <text class="student-summary-meta">{{activeStudent.className}} · 今晚评分</text>
-        </view>
-        <text class="student-summary-status status-{{activeStudent.status}}">{{activeStudent.statusText}}</text>
-      </view>
-
-      <view wx:if="{{activeStudent}}" class="teacher-ring-card">
-        <view class="teacher-ring-stage">
-          <view class="teacher-ring-shell"></view>
-          <canvas type="2d" id="teacherRings" canvas-id="teacherRings" class="teacher-ring-canvas"></canvas>
-          <view class="teacher-ring-center">
-            <text class="teacher-ring-score">{{activeStudent.totalWeighted}}</text>
+      <view wx:if="{{activeStudent}}" class="teacher-panel">
+        <view class="teacher-ring-card">
+          <view class="teacher-ring-stage">
+            <view class="teacher-ring-shell"></view>
+            <canvas type="2d" id="teacherRings" canvas-id="teacherRings" class="teacher-ring-canvas"></canvas>
+            <view class="teacher-ring-center">
+              <text class="teacher-ring-score">{{activeStudent.totalWeighted}}</text>
+            </view>
+          </view>
+          <view class="teacher-ring-footer">
+            <text class="teacher-ring-name">{{activeStudent.name}}</text>
+            <view class="student-summary-badge status-{{activeStudent.status}}">
+              <text class="student-summary-status">{{activeStudent.statusText}}</text>
+            </view>
           </view>
         </view>
-      </view>
 
-      <view wx:if="{{activeStudent}}" class="score-card">
-        <view wx:for="{{activeStudent.metrics}}" wx:key="key" class="score-row">
-          <view class="score-label-row">
-            <text class="score-label">{{item.label}}</text>
-            <text class="score-value" style="color: {{item.color}};">{{item.scoreText}} / 10</text>
+        <view class="teacher-section">
+          <view class="section-head">
+            <text class="section-title">评分</text>
           </view>
-          <custom-slider
-            value="{{item.score}}"
-            max="10"
-            activeColor="{{item.color}}"
-            data-key="{{item.key}}"
-            bind:changing="handleScoreChange"
-            bind:change="handleScoreChange"
-          ></custom-slider>
-        </view>
-      </view>
-
-      <view wx:if="{{activeStudent}}" class="feedback-card">
-        <text class="card-title">课堂反馈</text>
-        <textarea
-          class="feedback-input"
-          maxlength="300"
-          placeholder="例如：作业完成认真，背诵状态稳定，课堂纪律良好。"
-          value="{{activeStudent.feedback}}"
-          bindinput="handleFeedbackInput"
-        />
-      </view>
-
-      <view wx:if="{{activeStudent}}" class="photo-card">
-        <view class="photo-head">
-          <text class="card-title">作业照片</text>
-          <text class="photo-add" bindtap="handlePickImages">上传</text>
-        </view>
-        <view class="photo-list">
-          <view wx:for="{{activeStudent.photos}}" wx:key="*this" class="photo-item">
-            <image class="photo-image" src="{{item}}" mode="aspectFill"></image>
-            <view class="photo-remove" data-index="{{index}}" bindtap="handleRemovePhoto">×</view>
+          <view class="score-card">
+            <view wx:for="{{activeStudent.metrics}}" wx:key="key" class="score-row">
+              <view class="score-label-row">
+                <text class="score-label">{{item.label}}</text>
+                <text class="score-value" style="color: {{item.color}};">{{item.scoreText}}</text>
+              </view>
+              <custom-slider
+                value="{{item.score}}"
+                max="10"
+                activeColor="{{item.color}}"
+                data-key="{{item.key}}"
+                bind:changing="handleScoreChange"
+                bind:change="handleScoreChange"
+              ></custom-slider>
+            </view>
           </view>
-          <view wx:if="{{!activeStudent.photos.length}}" class="photo-placeholder">还没有上传作业照片</view>
         </view>
-      </view>
 
-      <view wx:if="{{activeStudent}}" class="action-row">
-        <button class="secondary-btn" bindtap="handleSave">保存</button>
-        <button class="primary-btn" bindtap="handleSubmit">提交给家长</button>
+        <view class="teacher-section">
+          <view class="section-head">
+            <text class="section-title">课堂反馈</text>
+          </view>
+          <view class="feedback-card">
+            <textarea
+              class="feedback-input"
+              maxlength="300"
+              placeholder="例如：作业完成认真，背诵状态稳定，课堂纪律良好。"
+              value="{{activeStudent.feedback}}"
+              bindinput="handleFeedbackInput"
+            />
+          </view>
+        </view>
+
+        <view class="teacher-section">
+          <view class="section-head">
+            <text class="section-title">作业照片</text>
+            <text class="photo-add" bindtap="handlePickImages">上传</text>
+          </view>
+          <view class="photo-card">
+            <view class="photo-list">
+              <view wx:for="{{activeStudent.photos}}" wx:key="*this" class="photo-item">
+                <image class="photo-image" src="{{item}}" mode="aspectFill"></image>
+                <view class="photo-remove" data-index="{{index}}" bindtap="handleRemovePhoto">×</view>
+              </view>
+              <view wx:if="{{!activeStudent.photos.length}}" class="photo-placeholder">
+                <text class="photo-placeholder-title">暂无作业照片</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="action-row">
+          <button class="secondary-btn" bindtap="handleSave">保存</button>
+          <button class="primary-btn" bindtap="handleSubmit">提交给家长</button>
+        </view>
       </view>
     </scroll-view>
   </view>
@@ -139,7 +142,7 @@
     </view>
   </view>
 
-  <view wx:if="{{showStudentModal || showClassModal}}" class="modal-mask" bindtap="closeModal"></view>
+  <view wx:if="{{showStudentModal}}" class="modal-mask" bindtap="closeModal"></view>
 
   <view wx:if="{{showStudentModal}}" class="modal-card">
     <text class="modal-title">添加学生</text>
@@ -152,20 +155,6 @@
     <view class="modal-actions">
       <button class="modal-cancel" bindtap="closeModal">取消</button>
       <button class="modal-confirm" bindtap="handleAddStudent">确定</button>
-    </view>
-  </view>
-
-  <view wx:if="{{showClassModal}}" class="modal-card">
-    <text class="modal-title">添加班级</text>
-    <input
-      class="modal-input"
-      placeholder="输入班级名称"
-      value="{{newClassName}}"
-      bindinput="handleClassNameInput"
-    />
-    <view class="modal-actions">
-      <button class="modal-cancel" bindtap="closeModal">取消</button>
-      <button class="modal-confirm" bindtap="handleAddClass">确定</button>
     </view>
   </view>
 </view>

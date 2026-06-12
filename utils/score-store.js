@@ -7,21 +7,18 @@ const METRICS = [
   { key: 'discipline', label: '纪律', weight: 0.25 },
 ];
 
-const DEFAULT_CLASSES = [
-  { key: 'class-1', label: '雏鹰班' },
-  { key: 'class-2', label: '进阶班' },
-  { key: 'class-3', label: '晚训班' },
-];
+const DEFAULT_CLASS = { key: 'class-1', label: '雏鹰班' };
+const DEFAULT_CLASSES = [DEFAULT_CLASS];
 
 const DEFAULT_STUDENTS = [
-  { id: 's1', name: '林浩', className: '雏鹰班', classKey: 'class-1' },
-  { id: 's2', name: '许然', className: '雏鹰班', classKey: 'class-1' },
-  { id: 's3', name: '周宁', className: '雏鹰班', classKey: 'class-1' },
-  { id: 's4', name: '陈语', className: '雏鹰班', classKey: 'class-1' },
-  { id: 's5', name: '孙天昊', className: '进阶班', classKey: 'class-2' },
-  { id: 's6', name: '李若妍', className: '进阶班', classKey: 'class-2' },
-  { id: 's7', name: '朱冰宁', className: '晚训班', classKey: 'class-3' },
-  { id: 's8', name: '于祥元', className: '晚训班', classKey: 'class-3' },
+  { id: 's1', name: '林浩', className: DEFAULT_CLASS.label, classKey: DEFAULT_CLASS.key },
+  { id: 's2', name: '许然', className: DEFAULT_CLASS.label, classKey: DEFAULT_CLASS.key },
+  { id: 's3', name: '周宁', className: DEFAULT_CLASS.label, classKey: DEFAULT_CLASS.key },
+  { id: 's4', name: '陈语', className: DEFAULT_CLASS.label, classKey: DEFAULT_CLASS.key },
+  { id: 's5', name: '孙天昊', className: DEFAULT_CLASS.label, classKey: DEFAULT_CLASS.key },
+  { id: 's6', name: '李若妍', className: DEFAULT_CLASS.label, classKey: DEFAULT_CLASS.key },
+  { id: 's7', name: '朱冰宁', className: DEFAULT_CLASS.label, classKey: DEFAULT_CLASS.key },
+  { id: 's8', name: '于祥宇', className: DEFAULT_CLASS.label, classKey: DEFAULT_CLASS.key },
 ];
 
 const SCORE_PATTERNS = {
@@ -105,7 +102,7 @@ function buildMonthInfo(year, month, day = 1) {
     day,
     dateKey: `${year}-${pad(month)}-${pad(day)}`,
     monthKey: `${year}-${pad(month)}`,
-    monthLabel: `${year}年${month}月`,
+    monthLabel: `${year}年 ${month}月`,
   };
 }
 
@@ -207,11 +204,33 @@ function buildStateFromDefaults() {
   };
 }
 
+function normalizeState(state) {
+  const base = state && typeof state === 'object' ? clone(state) : buildStateFromDefaults();
+  const classes = clone(DEFAULT_CLASSES);
+  const studentsSource = Array.isArray(base.students) && base.students.length ? base.students : DEFAULT_STUDENTS;
+  const students = studentsSource.map((student, index) => ({
+    id: student.id || `s-${index + 1}`,
+    name: student.name || `学生${index + 1}`,
+    className: DEFAULT_CLASS.label,
+    classKey: DEFAULT_CLASS.key,
+  }));
+
+  return {
+    classes,
+    students,
+    records: base.records && typeof base.records === 'object'
+      ? clone(base.records)
+      : generateDefaultRecords(students, getTodayInfo()),
+  };
+}
+
 function getState() {
   try {
     const stored = wx.getStorageSync(STORAGE_KEY);
-    if (stored && typeof stored === 'object' && stored.classes && stored.students && stored.records) {
-      return stored;
+    if (stored && typeof stored === 'object' && stored.students && stored.records) {
+      const normalized = normalizeState(stored);
+      wx.setStorageSync(STORAGE_KEY, normalized);
+      return normalized;
     }
   } catch (error) {}
 
@@ -221,7 +240,7 @@ function getState() {
 }
 
 function setState(state) {
-  wx.setStorageSync(STORAGE_KEY, state);
+  wx.setStorageSync(STORAGE_KEY, normalizeState(state));
 }
 
 function getRecords() {
@@ -239,7 +258,7 @@ function getStudents() {
 }
 
 function getTeacherClasses() {
-  return clone(getState().classes);
+  return clone(DEFAULT_CLASSES);
 }
 
 function getStudentRecord(records, dateKey, studentId) {
@@ -290,30 +309,17 @@ function updateStudentRecord(records, dateKey, studentId, payload) {
   return nextRecords;
 }
 
-function addClass(label) {
-  const trimmed = String(label || '').trim();
-  if (!trimmed) return null;
-
-  const state = getState();
-  const nextClass = { key: `class-${Date.now()}`, label: trimmed };
-  state.classes.push(nextClass);
-  setState(state);
-  return clone(nextClass);
-}
-
 function addStudent({ name, classKey }) {
   const trimmedName = String(name || '').trim();
-  if (!trimmedName || !classKey) return null;
+  const nextClassKey = classKey || DEFAULT_CLASS.key;
+  if (!trimmedName || nextClassKey !== DEFAULT_CLASS.key) return null;
 
   const state = getState();
-  const targetClass = state.classes.find((item) => item.key === classKey);
-  if (!targetClass) return null;
-
   const nextStudent = {
     id: `s-${Date.now()}`,
     name: trimmedName,
-    className: targetClass.label,
-    classKey,
+    className: DEFAULT_CLASS.label,
+    classKey: DEFAULT_CLASS.key,
   };
 
   state.students.push(nextStudent);
@@ -323,6 +329,7 @@ function addStudent({ name, classKey }) {
 }
 
 function buildTeacherStudentView(students, records, dateKey, studentId) {
+  if (!students.length) return null;
   const activeStudent = students.find((item) => item.id === studentId) || students[0];
   const record = getStudentRecord(records, dateKey, activeStudent.id);
   return {
@@ -415,7 +422,6 @@ function buildParentHistory(studentId, options = {}) {
 module.exports = {
   METRICS,
   STORAGE_KEY,
-  addClass,
   addStudent,
   buildMonthInfo,
   shiftMonth,

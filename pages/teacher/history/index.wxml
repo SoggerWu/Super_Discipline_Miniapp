@@ -1,23 +1,7 @@
-<navigation-bar title="超级纪律（教师端）" back="{{true}}" color="black" background="#F6F8FB"></navigation-bar>
+<navigation-bar title="{{activeClassLabel}}" back="{{true}}" color="black" background="#F6F8FB"></navigation-bar>
 
 <view class="history-page">
-  <view class="history-topbar">
-    <text class="history-title">记录</text>
-    <text class="history-subtitle">{{activeStudentName ? activeStudentName + ' · 晚自习情况' : '选择学生查看记录'}}</text>
-  </view>
-
-  <scroll-view class="class-tabs" scroll-x enable-flex show-scrollbar="{{false}}">
-    <view
-      wx:for="{{classes}}"
-      wx:key="key"
-      class="class-tab {{item.key === activeClassKey ? 'class-tab-active' : ''}}"
-      data-key="{{item.key}}"
-      bindtap="handleClassChange"
-    >
-      <text class="class-tab-label">{{item.label}}</text>
-    </view>
-  </scroll-view>
-
+  <scroll-view class="history-scroll" scroll-y enhanced show-scrollbar="{{false}}">
   <scroll-view class="student-chips" scroll-x enable-flex show-scrollbar="{{false}}">
     <view
       wx:for="{{students}}"
@@ -66,6 +50,7 @@
       </view>
     </view>
   </view>
+  </scroll-view>
 
   <view
     class="weekend-toggle {{showWeekends ? 'weekend-toggle-active' : ''}}"

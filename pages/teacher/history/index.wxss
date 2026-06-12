@@ -1,47 +1,32 @@
 page {
-  min-height: 100vh;
+  height: 100vh;
   background: linear-gradient(180deg, #f7fafd 0%, #f4f7fb 100%);
   color: #101820;
+  overflow: hidden;
 }
 
 .history-page {
   position: relative;
-  padding: 20rpx 20rpx 170rpx;
+  height: 100vh;
+  overflow: hidden;
+  padding: 0 20rpx;
+  box-sizing: border-box;
 }
 
-.history-topbar {
-  margin-bottom: 14rpx;
+.history-scroll {
+  height: calc(100vh - 118rpx);
+  padding: 20rpx 0 170rpx;
+  box-sizing: border-box;
 }
 
-.history-title {
-  display: block;
-  font-size: 40rpx;
-  font-weight: 700;
-  letter-spacing: -1rpx;
-  color: #15293d;
-}
-
-.history-subtitle {
-  display: block;
-  margin-top: 8rpx;
-  font-size: 22rpx;
-  color: #73859b;
-}
-
-.class-tabs,
 .student-chips {
   white-space: nowrap;
-}
-
-.class-tabs {
-  margin-bottom: 12rpx;
 }
 
 .student-chips {
   margin-bottom: 16rpx;
 }
 
-.class-tab,
 .student-chip {
   display: inline-flex;
   align-items: center;
@@ -55,20 +40,17 @@ page {
   box-sizing: border-box;
 }
 
-.class-tab-active,
 .student-chip-active {
   background: #ffffff;
   box-shadow: 0 8rpx 20rpx rgba(84, 101, 122, 0.08);
 }
 
-.class-tab-label,
 .student-chip-name {
   font-size: 22rpx;
   font-weight: 600;
   color: #6d8096;
 }
 
-.class-tab-active .class-tab-label,
 .student-chip-active .student-chip-name {
   color: #18314a;
 }

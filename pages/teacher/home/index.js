@@ -4,17 +4,14 @@ const { getSystemInfo, chooseImageMedia } = require('../../../utils/wx-compat');
 Page({
   data: {
     title: '超级纪律（教师端）',
+    classLabel: '',
     dateLabel: '',
-    classes: [],
-    activeClassKey: '',
     students: [],
     activeStudentId: '',
     activeStudent: null,
     records: {},
     showStudentModal: false,
-    showClassModal: false,
     newStudentName: '',
-    newClassName: '',
   },
 
   onLoad() {
@@ -22,14 +19,12 @@ Page({
     const classes = store.getTeacherClasses();
     const records = store.getRecords();
     const students = store.getStudents();
-    const activeClassKey = classes[0] ? classes[0].key : '';
-    const firstStudent = students.find((item) => item.classKey === activeClassKey);
+    const firstStudent = students[0] || null;
 
     this.setData(
       {
+        classLabel: classes[0] ? classes[0].label : '',
         dateLabel: today.dateKey,
-        classes,
-        activeClassKey,
         activeStudentId: firstStudent ? firstStudent.id : '',
         records,
       },
@@ -48,14 +43,20 @@ Page({
   refreshRoster(callback) {
     const classes = store.getTeacherClasses();
     const records = store.getRecords();
-    this.setData({ classes, records }, () => {
-      this.syncView();
-      if (callback) callback();
-    });
+    this.setData(
+      {
+        classLabel: classes[0] ? classes[0].label : '',
+        records,
+      },
+      () => {
+        this.syncView();
+        if (callback) callback();
+      }
+    );
   },
 
   syncView() {
-    const baseStudents = store.getStudents().filter((item) => item.classKey === this.data.activeClassKey);
+    const baseStudents = store.getStudents();
     const students = store.buildTeacherRail(baseStudents, this.data.records, this.data.dateLabel);
     const fallbackStudentId = students[0] ? students[0].id : '';
     const activeStudentId = students.some((item) => item.id === this.data.activeStudentId)
@@ -146,12 +147,6 @@ Page({
     ctx.fillText(String(score), centerX, centerY);
   },
 
-  handleClassChange(event) {
-    const { key } = event.currentTarget.dataset;
-    if (!key || key === this.data.activeClassKey) return;
-    this.setData({ activeClassKey: key, activeStudentId: '' }, () => this.syncView());
-  },
-
   handleStudentChange(event) {
     const { id } = event.currentTarget.dataset;
     if (!id || id === this.data.activeStudentId) return;
@@ -162,16 +157,10 @@ Page({
     this.setData({ showStudentModal: true, newStudentName: '' });
   },
 
-  openClassModal() {
-    this.setData({ showClassModal: true, newClassName: '' });
-  },
-
   closeModal() {
     this.setData({
       showStudentModal: false,
-      showClassModal: false,
       newStudentName: '',
-      newClassName: '',
     });
   },
 
@@ -179,14 +168,10 @@ Page({
     this.setData({ newStudentName: event.detail.value });
   },
 
-  handleClassNameInput(event) {
-    this.setData({ newClassName: event.detail.value });
-  },
-
   handleAddStudent() {
     const student = store.addStudent({
       name: this.data.newStudentName,
-      classKey: this.data.activeClassKey,
+      classKey: store.getTeacherClasses()[0] ? store.getTeacherClasses()[0].key : '',
     });
 
     if (!student) {
@@ -199,24 +184,6 @@ Page({
         showStudentModal: false,
         newStudentName: '',
         activeStudentId: student.id,
-      },
-      () => this.refreshRoster()
-    );
-  },
-
-  handleAddClass() {
-    const nextClass = store.addClass(this.data.newClassName);
-    if (!nextClass) {
-      wx.showToast({ title: '请输入班级名称', icon: 'none' });
-      return;
-    }
-
-    this.setData(
-      {
-        showClassModal: false,
-        newClassName: '',
-        activeClassKey: nextClass.key,
-        activeStudentId: '',
       },
       () => this.refreshRoster()
     );

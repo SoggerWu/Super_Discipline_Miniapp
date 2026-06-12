@@ -23,6 +23,7 @@ function buildModalState(record, dateKey) {
 
 Page({
   data: {
+    activeClassLabel: '',
     monthLabel: '',
     weekdays: [],
     days: [],
@@ -89,6 +90,7 @@ Page({
     const students = allStudents.filter((item) => item.classKey === this.data.activeClassKey);
     const fallbackStudent = students[0] || null;
     const activeStudent = students.find((item) => item.id === this.data.activeStudentId) || fallbackStudent;
+    const activeClass = this.data.classes.find((item) => item.key === this.data.activeClassKey) || null;
 
     const history = activeStudent
       ? store.buildParentHistory(activeStudent.id, {
@@ -107,6 +109,7 @@ Page({
 
     this.setData(
       {
+        activeClassLabel: activeClass ? activeClass.label : '',
         students,
         activeStudentId: activeStudent ? activeStudent.id : '',
         activeStudentName: activeStudent ? activeStudent.name : '',
