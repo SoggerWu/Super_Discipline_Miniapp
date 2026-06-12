@@ -1,3 +1,5 @@
+const { getSystemInfo } = require('../../utils/wx-compat');
+
 Component({
   options: {
     multipleSlots: true // 在组件定义时的选项中启用多slot支持
@@ -60,10 +62,11 @@ Component({
   lifetimes: {
     attached() {
       const rect = wx.getMenuButtonBoundingClientRect()
-      const platform = (wx.getDeviceInfo() || wx.getSystemInfoSync()).platform
+      const systemInfo = getSystemInfo()
+      const platform = systemInfo.platform
       const isAndroid = platform === 'android'
       const isDevtools = platform === 'devtools'
-      const { windowWidth, safeArea: { top = 0, bottom = 0 } = {} } = wx.getWindowInfo() || wx.getSystemInfoSync()
+      const { windowWidth, safeArea: { top = 0 } = {} } = systemInfo
       this.setData({
         ios: !isAndroid,
         innerPaddingRight: `padding-right: ${windowWidth - rect.left}px`,

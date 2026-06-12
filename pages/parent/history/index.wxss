@@ -97,16 +97,19 @@ page {
 }
 
 .weekday {
-  padding: 8rpx 0 14rpx;
+  padding: 10rpx 0 12rpx;
   font-size: 20rpx;
   font-weight: 600;
   color: #8a97aa;
+  background: transparent;
 }
 
 .day-cell {
   min-height: 148rpx;
   padding: 8rpx 0 10rpx;
-  border-radius: 22rpx;
+  border-right: 1rpx solid #e8edf2;
+  border-bottom: 1rpx solid #e8edf2;
+  background: rgba(255, 255, 255, 0.96);
 }
 
 .day-cell-tappable:active {
@@ -114,20 +117,25 @@ page {
 }
 
 .day-cell-weekend {
-  background: rgba(239, 244, 248, 0.7);
+  background: #f7fafc;
+}
+
+.day-cell:nth-child(5n + 1) {
+  border-left: 1rpx solid #e8edf2;
 }
 
 .day-num {
   display: block;
+  margin-top: 2rpx;
   font-size: 20rpx;
   font-weight: 600;
   color: #5d7087;
 }
 
 .history-ring-canvas {
-  width: 86rpx;
-  height: 86rpx;
-  margin: 14rpx auto 0;
+  width: 108rpx;
+  height: 108rpx;
+  margin: 6rpx auto 0;
 }
 
 .weekend-toggle {
