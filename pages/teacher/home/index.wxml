@@ -109,8 +109,7 @@
         </view>
 
         <view class="action-row">
-          <button class="secondary-btn" bindtap="handleSave">保存</button>
-          <button class="primary-btn" bindtap="handleSubmit">提交给家长</button>
+          <button class="primary-btn action-submit-btn" bindtap="handleSubmit">提交给家长</button>
         </view>
       </view>
     </scroll-view>

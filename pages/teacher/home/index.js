@@ -201,7 +201,7 @@ Page({
     }, {});
 
     const records = store.updateStudentRecord(this.data.records, this.data.dateLabel, this.data.activeStudentId, {
-      status: activeStudent.status === 'submitted' ? 'submitted' : 'draft',
+      status: 'draft',
       scores: { ...currentScores, [key]: value },
       feedback: activeStudent.feedback,
       photos: activeStudent.photos,
@@ -221,7 +221,7 @@ Page({
     }, {});
 
     const records = store.updateStudentRecord(this.data.records, this.data.dateLabel, this.data.activeStudentId, {
-      status: activeStudent.status === 'submitted' ? 'submitted' : 'draft',
+      status: 'draft',
       scores: currentScores,
       feedback,
       photos: activeStudent.photos,
@@ -245,7 +245,7 @@ Page({
         }, {});
 
         const records = store.updateStudentRecord(this.data.records, this.data.dateLabel, this.data.activeStudentId, {
-          status: activeStudent.status === 'submitted' ? 'submitted' : 'draft',
+          status: 'draft',
           scores: currentScores,
           feedback: activeStudent.feedback,
           photos: [...activeStudent.photos, ...photos].slice(0, 3),
@@ -267,7 +267,7 @@ Page({
     }, {});
 
     const records = store.updateStudentRecord(this.data.records, this.data.dateLabel, this.data.activeStudentId, {
-      status: activeStudent.status,
+      status: 'draft',
       scores: currentScores,
       feedback: activeStudent.feedback,
       photos: activeStudent.photos.filter((_, photoIndex) => photoIndex !== index),

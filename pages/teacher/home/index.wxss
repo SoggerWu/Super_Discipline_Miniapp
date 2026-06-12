@@ -401,7 +401,6 @@ page {
 
 .action-row {
   display: flex;
-  gap: 16rpx;
   padding: 4rpx 0 22rpx;
 }
 
@@ -427,6 +426,10 @@ page {
 .primary-btn {
   color: #ffffff;
   background: linear-gradient(135deg, #2d7cff, #44c072);
+}
+
+.action-submit-btn {
+  width: 100%;
 }
 
 .secondary-btn::after,
