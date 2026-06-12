@@ -1,4 +1,5 @@
 const store = require('../../../utils/score-store');
+const { getSystemInfo, chooseImageMedia } = require('../../../utils/wx-compat');
 
 function formatDateLabel(dateKey) {
   if (!dateKey) return '';
@@ -49,7 +50,7 @@ Page({
 
   onLoad() {
     const today = store.getTodayInfo();
-    const windowInfo = wx.getWindowInfo();
+    const windowInfo = getSystemInfo();
     const classes = store.getTeacherClasses();
     const allStudents = store.getStudents();
     const records = store.getRecords();
@@ -219,7 +220,7 @@ Page({
   },
 
   handleModalPickImages() {
-    wx.chooseMedia({
+    chooseImageMedia({
       count: 3,
       mediaType: ['image'],
       success: (res) => {
@@ -282,7 +283,7 @@ Page({
 
         const { node: canvas, width, height } = canvasNode;
         const ctx = canvas.getContext('2d');
-        const dpr = wx.getWindowInfo().pixelRatio;
+        const dpr = getSystemInfo().pixelRatio;
         canvas.width = width * dpr;
         canvas.height = height * dpr;
         ctx.scale(dpr, dpr);
@@ -292,11 +293,14 @@ Page({
         const centerY = height / 2;
         const config = this.getRingConfig(width, height, day.metrics.length);
 
+        this.drawRingBackdrop(ctx, centerX, centerY, config.outerRadius + config.lineWidth / 2);
+
         day.metrics.forEach((metric, metricIndex) => {
           const radius = config.outerRadius - metricIndex * (config.lineWidth + config.gap);
           this.drawRing(ctx, centerX, centerY, radius, config.lineWidth, metric.percent, metric.color);
         });
 
+        this.drawOuterRing(ctx, centerX, centerY, config.outerRadius + config.lineWidth / 2, config.outlineWidth);
         this.drawCenterDisc(ctx, centerX, centerY, config.centerRadius);
       });
     });
@@ -305,13 +309,21 @@ Page({
   getRingConfig(width, height, ringCount) {
     const baseSize = Math.min(width, height);
     const half = baseSize / 2;
-    const outerPadding = Math.max(2, Math.round(baseSize * 0.04));
-    const gap = Math.max(1, Math.round(baseSize * 0.014));
-    const centerRadius = Math.max(4, Math.round(baseSize * 0.11));
+    const outerPadding = Math.max(1, Math.round(baseSize * 0.01));
+    const gap = Math.max(1, Math.round(baseSize * 0.004));
+    const centerRadius = Math.max(3, Math.round(baseSize * 0.058));
     const lineWidth = (half - outerPadding - centerRadius - gap * (ringCount - 1)) / ringCount;
     const outerRadius = half - outerPadding - lineWidth / 2;
+    const outlineWidth = Math.max(2, Math.round(baseSize * 0.022));
 
-    return { outerRadius, lineWidth, gap, centerRadius };
+    return { outerRadius, lineWidth, gap, centerRadius, outlineWidth };
+  },
+
+  drawRingBackdrop(ctx, centerX, centerY, radius) {
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, false);
+    ctx.fillStyle = '#0a2b39';
+    ctx.fill();
   },
 
   drawRing(ctx, centerX, centerY, radius, lineWidth, progress, color) {
@@ -323,7 +335,7 @@ Page({
     ctx.arc(centerX, centerY, radius, startAngle, endAngle, false);
     ctx.lineWidth = lineWidth;
     ctx.lineCap = 'round';
-    ctx.strokeStyle = '#d9e4e9';
+    ctx.strokeStyle = '#0a2b39';
     ctx.stroke();
 
     ctx.beginPath();
@@ -334,10 +346,18 @@ Page({
     ctx.stroke();
   },
 
+  drawOuterRing(ctx, centerX, centerY, radius, lineWidth) {
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, false);
+    ctx.lineWidth = lineWidth;
+    ctx.strokeStyle = '#04151d';
+    ctx.stroke();
+  },
+
   drawCenterDisc(ctx, centerX, centerY, radius) {
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, false);
-    ctx.fillStyle = '#eef4f7';
+    ctx.fillStyle = '#0a2b39';
     ctx.fill();
   },
 

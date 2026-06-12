@@ -1,4 +1,5 @@
 const store = require('../../../utils/score-store');
+const { getSystemInfo, chooseImageMedia } = require('../../../utils/wx-compat');
 
 Page({
   data: {
@@ -78,7 +79,7 @@ Page({
 
       const { node: canvas, width, height } = canvasNode;
       const ctx = canvas.getContext('2d');
-      const dpr = wx.getWindowInfo().pixelRatio;
+      const dpr = getSystemInfo().pixelRatio;
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       ctx.scale(dpr, dpr);
@@ -94,6 +95,7 @@ Page({
       });
 
       this.drawCenterDisc(ctx, centerX, centerY, config.centerRadius);
+      this.drawCenterScore(ctx, centerX, centerY, activeStudent.totalWeighted);
     });
   },
 
@@ -118,7 +120,7 @@ Page({
     ctx.arc(centerX, centerY, radius, startAngle, endAngle, false);
     ctx.lineWidth = lineWidth;
     ctx.lineCap = 'round';
-    ctx.strokeStyle = '#d6e0e5';
+    ctx.strokeStyle = '#0a2b39';
     ctx.stroke();
 
     ctx.beginPath();
@@ -132,8 +134,16 @@ Page({
   drawCenterDisc(ctx, centerX, centerY, radius) {
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, false);
-    ctx.fillStyle = '#edf3f6';
+    ctx.fillStyle = '#0a2b39';
     ctx.fill();
+  },
+
+  drawCenterScore(ctx, centerX, centerY, score) {
+    ctx.fillStyle = '#f4fbff';
+    ctx.font = '700 26px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(String(score), centerX, centerY);
   },
 
   handleClassChange(event) {
@@ -257,7 +267,7 @@ Page({
     const activeStudent = this.data.activeStudent;
     if (!activeStudent) return;
 
-    wx.chooseMedia({
+    chooseImageMedia({
       count: 3,
       mediaType: ['image'],
       success: (res) => {

@@ -78,6 +78,13 @@ const SCORE_PATTERNS = {
 const WORKDAY_LABELS = ['一', '二', '三', '四', '五'];
 const FULL_WEEK_LABELS = ['一', '二', '三', '四', '五', '六', '日'];
 
+const RING_COLORS = {
+  blue: '#35A8FF',
+  green: '#32D74B',
+  orange: '#F5B51F',
+  red: '#F5535D',
+};
+
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
@@ -134,10 +141,10 @@ function normalizeScores(scores) {
 }
 
 function metricColor(score) {
-  if (score >= 10) return '#3f86ff';
-  if (score >= 8) return '#36d66b';
-  if (score >= 6) return '#f3af3c';
-  return '#ea5a58';
+  if (score >= 10) return RING_COLORS.blue;
+  if (score >= 8) return RING_COLORS.green;
+  if (score >= 6) return RING_COLORS.orange;
+  return RING_COLORS.red;
 }
 
 function formatScore(score) {
@@ -152,7 +159,7 @@ function statusText(status) {
 
 function calculateWeightedScore(scores) {
   const normalized = normalizeScores(scores);
-  return Math.round(METRICS.reduce((sum, metric) => sum + normalized[metric.key] * metric.weight, 0));
+  return Math.round(METRICS.reduce((sum, metric) => sum + normalized[metric.key] * metric.weight, 0) * 10);
 }
 
 function mapMetrics(scores) {
