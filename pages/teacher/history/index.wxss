@@ -150,8 +150,9 @@ page {
 }
 
 .day-cell {
-  min-height: 148rpx;
-  padding: 8rpx 0 10rpx;
+  position: relative;
+  min-height: 172rpx;
+  padding: 8rpx 0 12rpx;
   border-right: 1rpx solid #e8edf2;
   border-bottom: 1rpx solid #e8edf2;
   background: rgba(255, 255, 255, 0.96);
@@ -166,11 +167,13 @@ page {
 }
 
 .day-num {
-  display: block;
-  margin-top: 2rpx;
-  font-size: 20rpx;
+  position: absolute;
+  top: 10rpx;
+  left: 12rpx;
+  font-size: 18rpx;
+  line-height: 1;
   font-weight: 600;
-  color: #5d7087;
+  color: #8a97aa;
 }
 
 .day-cell:nth-child(5n + 1) {
@@ -180,7 +183,19 @@ page {
 .history-ring-canvas {
   width: 108rpx;
   height: 108rpx;
-  margin: 6rpx auto 0;
+  margin: 20rpx auto 0;
+}
+
+.day-total-score {
+  display: inline-block;
+  margin-top: 6rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 999rpx;
+  background: #0a2b39;
+  font-size: 17rpx;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #f4fbff;
 }
 
 .weekend-toggle {

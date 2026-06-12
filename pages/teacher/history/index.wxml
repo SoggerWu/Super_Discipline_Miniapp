@@ -61,6 +61,7 @@
         <block wx:if="{{!item.empty}}">
           <text class="day-num">{{item.day}}</text>
           <canvas type="2d" class="history-ring-canvas" canvas-id="{{item.canvasId}}"></canvas>
+          <view class="day-total-score">{{item.totalWeighted}}%</view>
         </block>
       </view>
     </view>

@@ -395,6 +395,7 @@ function buildParentHistory(studentId, options = {}) {
       dateKey,
       day: String(day),
       isWeekend,
+      totalWeighted: calculateWeightedScore(record.scores),
       metrics: mapMetrics(record.scores),
       canvasId: `history-ring-${monthInfo.monthKey}-${day}`,
     });
